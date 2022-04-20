@@ -1,0 +1,29 @@
+{
+  "name": "donation",
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "scripts": {
+    "test": "npm run build && cd contract && npm run test && cd .. && npm run jest",
+    "jest": "npm run build && jest test --runInBand",
+    "build": "cd contract && npm run build",
+    "deploy": "npm run build && near dev-deploy"
+  },
+  "devDependencies": {
+    "asbuild": "^0.2.0",
+    "env-cmd": "~10.1.0",
+    "jest": "~27.5.1",
+    "jest-environment-node": "~27.5.1",
+    "near-cli": "~3.2.0",
+    "shelljs": "~0.8.5"
+  },
+  "dependencies": {
+    "near-sdk-as": "^3.2.3"
+  },
+  "jest": {
+    "testEnvironment": "near-cli/test_environment",
+    "testPathIgnorePatterns": [
+      "<rootDir>/contract/",
+      "<rootDir>/node_modules/"
+    ]
+  }
+}
