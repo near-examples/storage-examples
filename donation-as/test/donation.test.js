@@ -1,5 +1,3 @@
-const { utils: { format: { formatNearAmount, parseNearAmount } }, } = nearAPI
-
 const { create_user, wallet_balance } = require('./methods')
 
 describe('Donation Contract', function () {
