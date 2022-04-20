@@ -16,9 +16,7 @@ export function donate(): i32 {
 
   // Record the donation
   const donation_number: i32 = add_donation(donor, amount);
-  logging.log(
-    `EVENT_JSON:{"standard": "nep297", "version": "1.0.0", "event": "donation", "data": {"donor": "${donor}", "amount": "${amount}"}}"`
-  );
+  logging.log(`Thank you ${donor}! donation number: ${donation_number}`);
 
   // Send the money to the beneficiary
   const beneficiary: string = get_beneficiary();

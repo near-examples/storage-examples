@@ -24,10 +24,7 @@ impl Contract {
 
     // Record the donation
     let donation_number: u64 = self.add_donation(donor.clone(), amount);
-    log!(
-      r#"EVENT_JSON:{{"standard": "nep297", "version": "1.0.0", "event": "donation", "data": {{"donor": "{}", "amount": "{}"}}"#,
-      donor.clone(), amount
-    );
+    log!("Thank you {}! donation number: {}", donor.clone(), donation_number);
 
     // Send the money to the beneficiary
     Promise::new(self.beneficiary.clone()).transfer(amount - STORAGE_COST);
