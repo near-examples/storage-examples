@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "license": "UNLICENSED",
   "scripts": {
-    "test": "npm run build && cd contract && cargo test && cd .. && npm run jest",
+    "test": "npm run build && cd contract && cargo test && cd .. && jest test --runInBand",
     "jest": "npm run build && jest test --runInBand",
     "build": "cd contract && node ./compile.js",
     "deploy": "npm run build && near dev-deploy"

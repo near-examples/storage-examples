@@ -61,10 +61,10 @@ async function getOrCreateAccount(accountId) {
 };
 
 // Create Contract
-async function create_contract(accountId, viewMethods, changeMethods){
-	let account = await getOrCreateAccount(accountId)
+async function create_contract(userId, viewMethods, changeMethods, contractId){
+	let account = await getOrCreateAccount(userId)
 	const contractMethods = { viewMethods, changeMethods };
-	return new Contract(account, nearConfig.contractName, contractMethods);
+	return new Contract(account, contractId || nearConfig.contractName, contractMethods);
 }
 
 wallet_balance = async function (account_id) {
@@ -77,4 +77,14 @@ wallet_balance = async function (account_id) {
 	return balance
 }
 
-module.exports = {create_contract, wallet_balance}
+async function deploy_contract(accountId, filePath){
+	const validator = await getOrCreateAccount(accountId)
+	const validatorContractBytes = fs.readFileSync(filePath);
+
+	await validator.signAndSendTransaction({
+		receiverId: accountId,
+		actions: [deployContract(validatorContractBytes)]
+	});
+}
+
+module.exports = {create_contract, wallet_balance, deploy_contract}

@@ -1,4 +1,5 @@
-const { create_user, wallet_balance } = require('./methods')
+const { create_user } = require('./methods')
+const { wallet_balance } = require('./near_wrapper')
 
 describe('Donation Contract', function () {
   const alice_address = `alice.${nearConfig.contractName}`
