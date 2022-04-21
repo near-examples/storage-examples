@@ -38,6 +38,6 @@ export function get_donation(donation_number: i32): Donation {
   return donations[donation_number - 1]
 }
 
-export function get_number_of_donation() : i32{
+export function total_donations() : i32{
   return donations.length
 }
