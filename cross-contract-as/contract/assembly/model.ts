@@ -14,6 +14,15 @@ export const STORAGE_COST: u128 = u128.from("1000000000000000000000")
 
 const donations = new PersistentVector<Donation>("unique-id-1")
 
+// Stake pool
+export function set_pool(stake_pool: string): void{
+  storage.set<string>("stake_pool", stake_pool)
+}
+
+export function get_pool(): string{
+  return storage.getSome<string>("stake_pool")
+}
+
 // Beneficiary
 export function set_beneficiary(beneficiary: string): void{
   assert(!storage.contains("beneficiary"), "A beneficiary already exists")

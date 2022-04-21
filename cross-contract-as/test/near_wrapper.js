@@ -61,8 +61,8 @@ async function getOrCreateAccount(accountId) {
 };
 
 // Create Contract
-async function create_contract(userId, viewMethods, changeMethods, contractId){
-	let account = await getOrCreateAccount(userId)
+async function create_contract(accountId, viewMethods, changeMethods, contractId){
+	let account = await getOrCreateAccount(accountId)
 	const contractMethods = { viewMethods, changeMethods };
 	return new Contract(account, contractId || nearConfig.contractName, contractMethods);
 }

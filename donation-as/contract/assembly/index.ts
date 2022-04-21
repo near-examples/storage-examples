@@ -1,6 +1,6 @@
 import { u128, context, logging, ContractPromiseBatch } from "near-sdk-as";
 import { STORAGE_COST, Donation, add_donation, get_donation,
-         set_beneficiary, get_beneficiary, get_number_of_donation } from "./model";
+         set_beneficiary, get_beneficiary, total_donations } from "./model";
 
 // Public - init function, define the beneficiary of donations
 export function init(beneficiary: string): void {
@@ -32,7 +32,7 @@ export function get_donation_by_number(donation_number: i32): Donation {
 
 // Public - get total number of donations
 export function total_number_of_donation(): i32 {
-  return get_number_of_donation();
+  return total_donations();
 }
 
 // Public - get a range of donations

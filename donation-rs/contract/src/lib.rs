@@ -48,7 +48,7 @@ impl Contract {
   }
 
   // Public - get total number of donations
-  pub fn total_number_of_donation(&self) -> u64 {
+  pub fn total_donations(&self) -> u64 {
     return self.donations.len();
   }
 }
@@ -93,7 +93,7 @@ mod tests {
         assert_eq!(second_donation.donor, "donor_b".parse().unwrap());
         assert_eq!(second_donation.amount, 2*NEAR);
 
-        assert_eq!(contract.total_number_of_donation(), 2);
+        assert_eq!(contract.total_donations(), 2);
     }
 
     // Auxiliar fn: create a mock context
