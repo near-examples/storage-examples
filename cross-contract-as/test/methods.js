@@ -1,27 +1,37 @@
-const { wallet_balance, create_contract } = require('./near_wrapper')
+const { create_contract, deploy_contract } = require('./near_wrapper')
 const { utils: { format: { formatNearAmount, parseNearAmount } }, } = nearAPI
 
 const TGAS = 1000000000000
 
-deposit_and_stake = async function (amount, contract) {
-	amount = parseNearAmount(amount.toString())
-	let result = await contract.account.functionCall(
-		{
-			contractId: nearConfig.contractName, methodName: 'deposit_and_stake', args: {},
-			gas: 10 * TGAS, attachedDeposit: amount
-		}
-	)
-	return nearAPI.providers.getTransactionLastResult(result)
+// Contract methods
+init = async function (beneficiary, stake_pool, contract) {
+	return await contract.init({ args: { beneficiary, stake_pool } })
 }
 
-query_user_funds = async function (validator_id, user_id, contract) {
-	let funds = await contract.query_user_funds({ validator_id, user_id })
+donate = async function (amount, contract) {
+	amount = parseNearAmount(amount.toString())
+
+	let result = await contract.donate(
+		{ args: {}, gas: 80 * TGAS, amount }
+	)
+
+	return result
+}
+
+total_staked = async function (contract) {
+	let staked = await contract.total_staked({ args: {} })
+	staked = staked.toLocaleString('fullwide', { useGrouping: false })
+	return Number(formatNearAmount(staked))
+}
+
+get_donation_by_number = async function (donation_number, contract) {
+	let donation = await contract.get_donation_by_number({ donation_number })
 
 	// Sometimes the result is in scientific notation, parse it to full string
-	funds = funds.toLocaleString('fullwide', {useGrouping:false})
-
-	// return as a Number
-	return Number(formatNearAmount(funds))
+	const amount = donation.amount.toLocaleString('fullwide', { useGrouping: false })
+	donation.amount = Number(formatNearAmount(amount))
+	
+	return donation
 }
 
 // Class to simplify interacting with the contract
@@ -31,32 +41,39 @@ class User {
 		this.contract;
 	}
 
-	query_user_funds(validator_id, user_id){ return query_user_funds(validator_id, user_id, this.contract) }
-}
-
-class ValidatorUser {
-	constructor(accountId) {
-		this.accountId = accountId;
-		this.contract;
-	}
-
-	deposit_and_stake(amount){ return deposit_and_stake(amount, this.contract) }
+	init(beneficiary, stake_pool) { return init(beneficiary, stake_pool, this.contract) }
+	donate(amount) { return donate(amount, this.contract) }
+	total_staked() { return total_staked(this.contract) }
+	get_donation_by_number(donation_number) { return get_donation_by_number(donation_number, this.contract) }
 }
 
 async function create_user(accountId) {
 	let user = new User(accountId)
-	const viewMethods = ['']
-	const changeMethods = ['query_user_funds']
+	const viewMethods = ['get_donation_by_number']
+	const changeMethods = ['init', 'donate', 'total_staked']
 	user.contract = await create_contract(accountId, viewMethods, changeMethods)
 	return user
 }
 
-async function create_user_validator(accountId, validator_address) {
-	let user = new ValidatorUser(accountId)
-	const viewMethods = ['']
-	const changeMethods = ['deposit_and_stake']
-	user.contract = await create_contract(accountId, viewMethods, changeMethods, validator_address)
-	return user
-}
+/* 
+async function deploy_and_init_stake_pool(accountId, filePath) {
+	// We deploy the contract
+	await deploy_contract(accountId, filePath)
 
-module.exports = { create_user, create_user_validator, wallet_balance }
+	// Create a connection to the staking pool
+	const viewMethods = ['']
+	const changeMethods = ['new']
+	let staking_pool = await create_contract(accountId, [], changeMethods, accountId)
+
+	// Initialize it
+	await staking_pool.new({
+		args: {
+			owner_id: accountId,
+			stake_public_key: "KuTCtARNzxZQ3YvXDeLjx83FDqxv2SdQTSbiq876zR7",
+			reward_fee_fraction: { numerator: 0, denominator: 1 }
+		}, attachedDeposit: parseNearAmount("10"), gas: 300000000000000
+	})
+}
+*/
+
+module.exports = { create_user }

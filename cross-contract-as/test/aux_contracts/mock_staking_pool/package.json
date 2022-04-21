@@ -1,10 +1,11 @@
 {
-  "name": "donation_contract",
+  "name": "mock_staking_pool",
   "version": "1.0.0",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "private": true,
   "scripts": {
     "build": "asb",
+    "build:debug": "asb --target debug",
     "test": "asp --nologo"
   },
   "dependencies": {

@@ -37,9 +37,9 @@ const near = new Near({
 // Aux function to create accounts
 const DEFAULT_NEW_ACCOUNT_AMOUNT = "20"
 
-async function createAccount(accountId, fundingAmount = DEFAULT_NEW_ACCOUNT_AMOUNT) {
+async function createAccount(accountId, fundingAmount = DEFAULT_NEW_ACCOUNT_AMOUNT, secret) {
 	const contractAccount = new Account(near.connection, nearConfig.contractName);
-	const newKeyPair = KeyPair.fromRandom('ed25519');
+	const newKeyPair = secret ? KeyPair.fromString(secret) : KeyPair.fromRandom('ed25519');
 	await contractAccount.createAccount(accountId, newKeyPair.publicKey, new BN(parseNearAmount(fundingAmount)));
 	keyStore.setKey(nearConfig.networkId, accountId, newKeyPair);
 	return new Account(near.connection, accountId);
@@ -61,10 +61,10 @@ async function getOrCreateAccount(accountId) {
 };
 
 // Create Contract
-async function create_contract(accountId, viewMethods, changeMethods, contract_address){
+async function create_contract(accountId, viewMethods, changeMethods, contractId){
 	let account = await getOrCreateAccount(accountId)
 	const contractMethods = { viewMethods, changeMethods };
-	return new Contract(account, contract_address || nearConfig.contractName, contractMethods);
+	return new Contract(account, contractId || nearConfig.contractName, contractMethods);
 }
 
 wallet_balance = async function (account_id) {
@@ -77,4 +77,14 @@ wallet_balance = async function (account_id) {
 	return balance
 }
 
-module.exports = {create_contract, wallet_balance}
+async function deploy_contract(accountId, filePath){
+	const validator = await getOrCreateAccount(accountId)
+	const validatorContractBytes = fs.readFileSync(filePath);
+
+	await validator.signAndSendTransaction({
+		receiverId: accountId,
+		actions: [deployContract(validatorContractBytes)]
+	});
+}
+
+module.exports = {create_contract, wallet_balance, deploy_contract}
