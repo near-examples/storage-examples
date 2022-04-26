@@ -23,3 +23,5 @@ jobs:
         run: cd donation-as && yarn && yarn test
       - name: test:donation:rs
         run: cd donation-rs && yarn && yarn test
+      - name: test:storage:as
+        run: cd storage-as && yarn && yarn test
