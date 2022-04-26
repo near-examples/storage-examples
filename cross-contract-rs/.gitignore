@@ -27,12 +27,3 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-yarn.lock
-node_modules
-*/contract/build/
-*/contract/target/
-Cargo.lock
-
-out/
-.vscode/
