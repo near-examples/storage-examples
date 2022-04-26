@@ -14,13 +14,13 @@ export function init(beneficiary: string, stake_pool: string): void {
 // Public - donate
 export function donate(): void {
   // Make sure there is enough GAS to execute the callback
-  assert(context.prepaidGas >= 45*TGAS, "Please attach at least 11 Tgas")
+  assert(context.prepaidGas >= 45*TGAS, "Please attach at least 45 Tgas")
 
   // Get who is calling the method, and how much NEAR they attached
   const donor: string = context.predecessor;
   const amount: u128 = context.attachedDeposit;
 
-  // Stake donation in a pool, needs 5 Tgas
+  // Stake donation in a pool, needs 30 Tgas
   const stake_pool: string = get_pool();
   const DEPOSIT: u128 = amount - STORAGE_COST;
 
@@ -28,7 +28,7 @@ export function donate(): void {
     stake_pool, "deposit_and_stake", "{}", 30*TGAS, DEPOSIT
   )
 
-  // Create a callback, needs 5 Tgas
+  // Create a callback, needs 10 Tgas
   const callback_args: CbArgs = new CbArgs(donor, amount)
   const callbackPromise = promise.then(
     context.contractName, "donate_callback", callback_args.encode(), 10*TGAS
@@ -51,7 +51,7 @@ export function donate_callback(donor: string, amount:u128): i32 {
     // it failed - The deposit came back to us and we must return it
     logging.log(`There was an error, returning ${amount} to @${donor}`)
     ContractPromiseBatch.create(donor).transfer(amount)
-    return -1
+    return 0
   }
 }
 
@@ -85,13 +85,13 @@ export function total_staked_callback(): u128 {
   const response = get_callback_result()
 
   if (response.status == 1) {
-    // `get_user_info` succeeded
+    // `get_account` succeeded
     const user_info: User = decode<User>(response.buffer)
     logging.log(`This contract has ${user_info.staked_balance} NEARs staked`)
     return user_info.staked_balance
   } else {
-    // `get_user_info` failed
-    logging.log("There was an error in `get_user_info`")
+    // `get_account` failed
+    logging.log("There was an error in `get_account`")
     return u128.Zero
   }
 }

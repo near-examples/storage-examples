@@ -24,8 +24,7 @@ export class User {
   constructor(
     public staked_balance: u128,
     public unstaked_balance: u128,
-    public available_when: u64 = 0,
-    public available: bool = false
+    public available: bool
   ) { }
 }
 
