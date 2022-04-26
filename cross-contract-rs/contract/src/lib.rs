@@ -121,8 +121,6 @@ impl Contract {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use near_sdk::testing_env;
-    use near_sdk::test_utils::VMContextBuilder;
 
     const BENEFICIARY: &str = "beneficiary";
     const VALIDATOR: &str = "validator";
@@ -143,8 +141,7 @@ mod tests {
         let mut contract = Contract::new(beneficiary, validator);
 
         // Make a donation
-        set_context("donor_a", 1*NEAR);
-        let first_donation_idx = contract.donate();
+        let first_donation_idx = contract.add_donation("donor_a".parse().unwrap(), 1*NEAR);
         let first_donation: Donation = contract.get_donation_by_number(first_donation_idx);
 
         // Check the donation was recorded correctly
@@ -153,8 +150,7 @@ mod tests {
         assert_eq!(first_donation.amount, 1*NEAR);
 
         // Make another donation
-        set_context("donor_b", 2*NEAR);
-        let second_donation_idx = contract.donate();
+        let second_donation_idx = contract.add_donation("donor_b".parse().unwrap(), 2*NEAR);
         let second_donation: Donation = contract.get_donation_by_number(second_donation_idx);
 
         // Check the donation was recorded correctly
@@ -164,13 +160,4 @@ mod tests {
 
         assert_eq!(contract.total_donations(), 2);
     }
-
-    // Auxiliary fn: create a mock context
-    fn set_context(predecessor: &str, amount: Balance) {
-      let mut builder = VMContextBuilder::new();
-      builder.predecessor_account_id(predecessor.parse().unwrap());
-      builder.attached_deposit(amount);
-
-      testing_env!(builder.build());
-  }
 }
