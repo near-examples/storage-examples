@@ -10,3 +10,6 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 near-sdk = "4.0.0-pre.7"
 uint = { version = "0.8.3", default-features = false }
+
+[profile.release]
+overflow-checks = true
