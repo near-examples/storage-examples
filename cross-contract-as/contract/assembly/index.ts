@@ -66,14 +66,14 @@ export function total_staked(): void {
   // Create arguments for cross-contract call
   const args: ValidatorArgs = new ValidatorArgs(this_contract)
 
-  // Query the external validator, needs 5 Tgas
+  // Query the external validator, needs 6 Tgas
   const promise: ContractPromise = ContractPromise.create(
-    stake_pool, "get_account", args.encode(), 5*TGAS, NO_DEPOSIT
+    stake_pool, "get_account", args.encode(), 6*TGAS, NO_DEPOSIT
   )
 
-  // Create a callback, needs 5 Tgas
+  // Create a callback, needs 6 Tgas
   const callbackPromise = promise.then(
-    context.contractName, "total_staked_callback", "{}", 5*TGAS
+    context.contractName, "total_staked_callback", "{}", 6*TGAS
   )
 
   callbackPromise.returnAsResult();

@@ -70,13 +70,13 @@ impl Contract {
       env::current_account_id(),
       self.stake_pool.clone(),
       NO_DEPOSIT,
-      Gas::from(5*TGAS)
+      Gas::from(6*TGAS)
     );
 
     return promise.then(this_contract::total_staked_callback(
       env::current_account_id(),
       NO_DEPOSIT,
-      Gas::from(5*TGAS),
+      Gas::from(6*TGAS),
     ));
   }
 
