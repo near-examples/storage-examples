@@ -4,10 +4,13 @@
 const sh = require('shelljs')
 
 // Define the build command
-const buildCmd = "RUSTFLAGS='-C link-arg=-s' cargo build --all --target wasm32-unknown-unknown --release"
+const buildCmd1 = "rustup target add wasm32-unknown-unknown"
+
+const buildCmd2 = "RUSTFLAGS='-C link-arg=-s' cargo build --all --target wasm32-unknown-unknown --release"
 
 // Execute the build command, storing exit code for later use
-const { code } = sh.exec(buildCmd)
+sh.exec(buildCmd1)
+const { code } = sh.exec(buildCmd2)
 
 // Get package name from Cargo.toml
 const packageName = require('fs').readFileSync(`Cargo.toml`).toString().match(/name = "([^"]+)"/)[1]
