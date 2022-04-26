@@ -19,7 +19,7 @@ donate = async function (amount, contract) {
 }
 
 total_staked = async function (contract) {
-	let staked = await contract.total_staked({ args: {} })
+	let staked = await contract.total_staked({ args: {}, gas: 80*TGAS })
 	staked = staked.toLocaleString('fullwide', { useGrouping: false })
 	return Number(formatNearAmount(staked))
 }
