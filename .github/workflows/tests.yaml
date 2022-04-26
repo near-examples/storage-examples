@@ -15,6 +15,8 @@ jobs:
         with:
           toolchain: stable
           target: wasm32-unknown-unknown
+      - name: install shelljs
+        run:  npm i shelljs
       - name: test:xcc:as
         run: cd cross-contract-as && yarn test
       - name: test:xcc:rs
