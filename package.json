@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "test:xcc:rs": "cd cross-contract-rs && yarn && yarn test",
+    "test:xcc:as": "cd cross-contract-as && yarn && yarn test",
+    "test:storage:as": "cd storage-as && yarn && yarn test",
+    "test:donation:as": "cd donation-as && yarn && yarn test",
+    "test:donation:rs": "cd donation-rs && yarn && yarn test",
+    "test": "npm run test:donation:as && npm run test:donation:rs && npm run test:xcc:as && npm run test:xcc:rs"
+  }
+}

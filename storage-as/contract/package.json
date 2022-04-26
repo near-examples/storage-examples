@@ -1,0 +1,15 @@
+{
+  "name": "storage_contract",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "test": "asp --nologo"
+  },
+  "dependencies": {
+    "near-sdk-as": "^3.2.1"
+  },
+  "devDependencies": {
+    "shelljs": "^0.8.4"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "donation",
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "scripts": {
+    "test": "cd contract && npm run test"
+  },
+  "devDependencies": {
+    "asbuild": "^0.2.0"
+  },
+  "dependencies": {
+    "near-sdk-as": "^3.2.3"
+  },
+  "jest": {
+    "testEnvironment": "near-cli/test_environment",
+    "testPathIgnorePatterns": [
+      "<rootDir>/contract/",
+      "<rootDir>/node_modules/"
+    ]
+  }
+}
