@@ -1,15 +1,17 @@
-use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
-use near_sdk::{env, near_bindgen, PanicOnDefault};
-use near_sdk::collections::{LookupMap, Vector, UnorderedSet, TreeMap};
-
 pub mod storage;
 pub mod vector;
 pub mod map;
 pub mod set;
 pub mod tree;
 
+use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
+use near_sdk::{env, near_bindgen, PanicOnDefault};
+use near_sdk::collections::{LookupMap, Vector, UnorderedSet, TreeMap};
+
+// Constants
 const ONE_NEAR: u128 = 1_000_000_000_000_000_000_000_000;
 
+// Contract Structure
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
 pub struct Contract {
