@@ -1,5 +1,5 @@
-Donation Smart Contract
-=======================
+Storage Smart Contract
+======================
 
 A [smart contract] written in [RUST] 
 
