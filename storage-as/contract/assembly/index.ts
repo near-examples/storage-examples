@@ -1,25 +1,25 @@
 // Storage key value
 import { storage, u128 } from "near-sdk-as";
 
-export const STORAGE_COST: u128 = u128.from("1000000000000000000000")
+export const ONE_NEAR: u128 = u128.from("1000000000000000000000000")
 
-export function set_string(value: string): void {
+export function setter_demo_str(value: string): void {
   storage.set<string>("var-string", value)
 }
 
-export function get_string(): string {
+export function getter_demo_str(): string {
   return storage.getPrimitive<string>("var-string", "default value")
 }
 
-export function set_storage_cost(value: u128): void {
-  storage.set<u128>("storage-cost", value)
+export function setter_demo_u128(value: u128): void {
+  storage.set<u128>("var-u128", value)
 }
 
-export function get_storage_cost(): u128 {
-  if (storage.contains('storage-cost')) {
-    return storage.getSome<u128>("storage-cost")
+export function getter_demo_u128(): u128 {
+  if (storage.contains('var-u128')) {
+    return storage.getSome<u128>("var-u128")
   }
-  return STORAGE_COST
+  return ONE_NEAR
 }
 
 // Collections

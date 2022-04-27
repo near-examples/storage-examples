@@ -5,7 +5,7 @@ describe("Set", () => {
     const value: i32 = 1
 
     set.add(value)
-    assert(set.has(value), "Error setting value")
+    assert(set.has(value), "Error adding value")
 
     set.delete(value)
     assert(!set.has(value), "Error removing value")
