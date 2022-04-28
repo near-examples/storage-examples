@@ -2,14 +2,14 @@
 
 // `shelljs` is included in the devDependencies of the root project
 const sh = require('shelljs')
+const os = require('os')
 
-// Define the build command
+// Add wasm32 as a rust target
 const buildCmd1 = "rustup target add wasm32-unknown-unknown"
-
-const buildCmd2 = "RUSTFLAGS='-C link-arg=-s' cargo build --all --target wasm32-unknown-unknown --release"
-
-// Execute the build command, storing exit code for later use
 sh.exec(buildCmd1)
+
+// Compile contract [Note: there are more compilation flags in .cargo/config]
+const buildCmd2 = `cargo build --all --target wasm32-unknown-unknown --release`
 const { code } = sh.exec(buildCmd2)
 
 // Get package name from Cargo.toml
