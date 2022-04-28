@@ -2,15 +2,20 @@
 
 // `shelljs` is included in the devDependencies of the root project
 const sh = require('shelljs')
+const os = require('os')
 
-// Define the build command
+// Add wasm32 as a rust target
 const buildCmd1 = "rustup target add wasm32-unknown-unknown"
-
-const buildCmd2 = "RUSTFLAGS='-C link-arg=-s' cargo build --all --target wasm32-unknown-unknown --release"
-
-// Execute the build command, storing exit code for later use
 sh.exec(buildCmd1)
-const { code } = sh.exec(buildCmd2)
+
+const isWindows = os.platform() === 'win32'
+const export_command = isWindows? "use" : "export";
+
+const buildCmd2 = `${export_command} RUSTFLAGS='-C link-arg=-s'`
+sh.exec(buildCmd2)
+
+const buildCmd3 = "cargo build --all --target wasm32-unknown-unknown --release"
+const { code } = sh.exec(buildCmd3)
 
 // Get package name from Cargo.toml
 const packageName = require('fs').readFileSync(`Cargo.toml`).toString().match(/name = "([^"]+)"/)[1]
