@@ -8,13 +8,8 @@ const os = require('os')
 const buildCmd1 = "rustup target add wasm32-unknown-unknown"
 sh.exec(buildCmd1)
 
-// Add RUSTFLAGS
-const isWindows = os.platform() === 'win32'
-const export_command = isWindows? "$env:" : "export ";
-const RUSTFLAGS = `${export_command}RUSTFLAGS='-C link-arg=-s'`
-
-// Compile contract
-const buildCmd2 = `${RUSTFLAGS}; cargo build --all --target wasm32-unknown-unknown --release`
+// Compile contract [Note: there are more compilation flags in .cargo/config]
+const buildCmd2 = `cargo build --all --target wasm32-unknown-unknown --release`
 const { code } = sh.exec(buildCmd2)
 
 // Get package name from Cargo.toml
