@@ -27,3 +27,7 @@ jobs:
         run: cd storage-rs && yarn && yarn test
       - name: test:storage:as
         run: cd storage-as && yarn && yarn test
+      - name: test:hello-near:rs
+        run: cd hello-near-rs && yarn && yarn test
+      - name: test:hello-near:as
+        run: cd hello-near-as && yarn && yarn test
