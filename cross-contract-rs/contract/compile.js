@@ -8,14 +8,14 @@ const os = require('os')
 const buildCmd1 = "rustup target add wasm32-unknown-unknown"
 sh.exec(buildCmd1)
 
+// Add RUSTFLAGS
 const isWindows = os.platform() === 'win32'
-const export_command = isWindows? "use" : "export";
+const export_command = isWindows? "$env:" : "export ";
+const RUSTFLAGS = `${export_command}RUSTFLAGS='-C link-arg=-s'`
 
-const buildCmd2 = `${export_command} RUSTFLAGS='-C link-arg=-s'`
-sh.exec(buildCmd2)
-
-const buildCmd3 = "cargo build --all --target wasm32-unknown-unknown --release"
-const { code } = sh.exec(buildCmd3)
+// Compile contract
+const buildCmd2 = `${RUSTFLAGS}; cargo build --all --target wasm32-unknown-unknown --release`
+const { code } = sh.exec(buildCmd2)
 
 // Get package name from Cargo.toml
 const packageName = require('fs').readFileSync(`Cargo.toml`).toString().match(/name = "([^"]+)"/)[1]

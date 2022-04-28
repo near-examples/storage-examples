@@ -15,15 +15,15 @@ jobs:
         with:
           toolchain: stable
           target: wasm32-unknown-unknown
-      - name: test:xcc:as
-        run: cd cross-contract-as && yarn && yarn test
       - name: test:xcc:rs
         run: cd cross-contract-rs && yarn && yarn test
-      - name: test:donation:as
-        run: cd donation-as && yarn && yarn test
+      - name: test:xcc:as
+        run: cd cross-contract-as && yarn && yarn test
       - name: test:donation:rs
         run: cd donation-rs && yarn && yarn test
-      - name: test:storage:as
-        run: cd storage-as && yarn && yarn test
+      - name: test:donation:as
+        run: cd donation-as && yarn && yarn test
       - name: test:storage:rs
         run: cd storage-rs && yarn && yarn test
+      - name: test:storage:as
+        run: cd storage-as && yarn && yarn test
