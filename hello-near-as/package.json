@@ -11,6 +11,7 @@
     "dev": "nodemon --watch contract -e ts --exec \"npm run start\""
   },
   "devDependencies": {
+    "asbuild": "^0.2.0",
     "env-cmd": "~10.1.0",
     "jest": "~26.6.2",
     "jest-environment-node": "~26.6.2",
@@ -21,7 +22,8 @@
   },
   "dependencies": {
     "near-api-js": "~0.43.1",
-    "regenerator-runtime": "~0.13.5"
+    "regenerator-runtime": "~0.13.5",
+    "near-sdk-as": "^3.2.3"
   },
   "jest": {
     "testEnvironment": "near-cli/test_environment",
