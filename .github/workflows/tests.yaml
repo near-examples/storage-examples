@@ -16,9 +16,13 @@ jobs:
           toolchain: stable
           target: wasm32-unknown-unknown
       - name: test:xcc:rs
-        run: cd cross-contract-rs && yarn && yarn test
+        run: cd cross-contract-donation-rs && yarn && yarn test
       - name: test:xcc:as
-        run: cd cross-contract-as && yarn && yarn test
+        run: cd cross-contract-donation-as && yarn && yarn test
+      - name: test:xcc-hello:rs
+        run: cd cross-contract-hello-rs && yarn && yarn test
+      - name: test:xcc-hello:as
+        run: cd cross-contract-hello-as && yarn && yarn test
       - name: test:donation:rs
         run: cd donation-rs && yarn && yarn test
       - name: test:donation:as

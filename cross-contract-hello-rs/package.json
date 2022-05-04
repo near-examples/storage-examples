@@ -1,0 +1,28 @@
+{
+  "name": "donation",
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "scripts": {
+    "test": "npm run build && cd contract && cargo test && cd .. && jest test --runInBand",
+    "jest": "npm run build && jest test --runInBand",
+    "build": "cd contract && rustup override set nightly && node ./compile.js",
+    "deploy": "npm run build && near dev-deploy"
+  },
+  "devDependencies": {
+    "env-cmd": "~10.1.0",
+    "jest": "~27.5.1",
+    "jest-environment-node": "~27.5.1",
+    "near-cli": "~3.2.0",
+    "shelljs": "~0.8.5"
+  },
+  "dependencies": {
+    "near-api-js": "^0.44.2"
+  },
+  "jest": {
+    "testEnvironment": "near-cli/test_environment",
+    "testPathIgnorePatterns": [
+      "<rootDir>/contract/",
+      "<rootDir>/node_modules/"
+    ]
+  }
+}
