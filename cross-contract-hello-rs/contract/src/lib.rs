@@ -23,14 +23,17 @@ impl Contract {
 
   // Public - query external greeting
   pub fn query_greeting(&self) -> Promise{
+    // Make sure there is enough GAS to execute the callback
     assert!(env::prepaid_gas() >= Gas::from(20*TGAS), "Please attach at least 20 TGAS");
 
+    // Create a promise to call HelloNEAR.get_greeting()
     let promise = hello_near::get_greeting(
       self.hello_account.clone(),
       NO_DEPOSIT,
       Gas::from(5*TGAS)
     );
 
+    // Create a promise to callback query_greeting_callback
     return promise.then(this_contract::query_greeting_callback(
       env::current_account_id(),
       NO_DEPOSIT,
@@ -38,14 +41,14 @@ impl Contract {
     ));
   }
 
-  #[private]
+  #[private] // Public - but only callable by env::current_account_id()
   pub fn query_greeting_callback(&self) -> String {
     if !external::did_promise_succeed() {
       log!("There was an error contacting Hello NEAR");
       return "".to_string();
     }
 
-    // Get response, return 0 if failed
+    // Get response, return "" if failed
     let greeting: String = match env::promise_result(0) {
       PromiseResult::Successful(value) => near_sdk::serde_json::from_slice::<String>(&value).unwrap(),
       _ => { log!("There was an error contacting Hello NEAR"); return "".to_string(); },
@@ -54,11 +57,12 @@ impl Contract {
     return greeting;
   }
 
-
-  #[payable] // Public - People can attach money
+  // Public - change external greeting
   pub fn change_greeting(&mut self, new_greeting: String) -> Promise {
+    // Make sure there is enough GAS to execute the callback
     assert!(env::prepaid_gas() >= Gas::from(20*TGAS), "Please attach at least 20 TGAS");
 
+    // Create a promise to call HelloNEAR.set_greeting(message:string)
     let promise = hello_near::set_greeting(
       new_greeting,
       self.hello_account.clone(),
@@ -66,7 +70,7 @@ impl Contract {
       Gas::from(5*TGAS)
     );
 
-    // Create a callback, needs 10 Tgas
+    // Create a callback change_greeting_callback
     return promise.then(this_contract::change_greeting_callback(
         env::current_account_id(),
         NO_DEPOSIT,
