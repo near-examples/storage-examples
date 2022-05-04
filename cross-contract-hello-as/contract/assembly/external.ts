@@ -25,16 +25,3 @@ export class GreetingArgs {
     public message: string
   ) { }
 }
-
-@nearBindgen
-export class CbArgs {
-  constructor(
-    public donor: string,
-    public amount: u128
-  ) { }
-}
-
-@nearBindgen
-export class ValidatorArgs {
-  constructor(public account_id: string) {}
-}

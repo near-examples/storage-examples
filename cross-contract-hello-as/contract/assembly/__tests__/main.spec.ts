@@ -6,7 +6,7 @@ describe("Initializing", () => {
   it("initializes correctly", () => {
     VMContext.setPredecessor_account_id(Context.contractName)
     init("test-account")
-    const stored_account = storage.getSome<string>('hello-near-address')
+    const stored_account = storage.getSome<string>('hello-near')
     expect(stored_account).toBe("test-account", "Error during init")
   })
 })
