@@ -1,16 +1,16 @@
 import { storage, u128 } from "near-sdk-as";
 import { PersistentMap, PersistentVector, PersistentSet, AVLTree } from "near-sdk-as";
 
-// Constants
-export const ONE_NEAR: u128 = u128.from("1000000000000000000000000")
-
 // Collections
 export let vector = new PersistentVector<i32>("unique-id-vector1");
 export let map = new PersistentMap<string, i32>("unique-id-map1");
 export let set = new PersistentSet<i32>("unique-id-set1");
 export let tree = new AVLTree<string, i32>("unique-id-tree1");
 
-// Storage setters & getters
+// Constants
+export const ONE_NEAR: u128 = u128.from("1000000000000000000000000")
+
+// Storage setters & getters ("Attributes")
 export function setter_demo_str(value: string): void {
   storage.set<string>("var-string", value)
 }
