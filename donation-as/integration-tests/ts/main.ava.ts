@@ -6,7 +6,7 @@ const test = anyTest as TestFn<{
   accounts: Record<string, NearAccount>;
 }>;
 
-test.before(async (t) => {
+test.beforeEach(async (t) => {
   // Init the worker and start a Sandbox server
   const worker = await Worker.init();
 
@@ -45,10 +45,10 @@ test.afterEach(async (t) => {
   });
 });
 
-/* test("cannot be initialized twice", async (t) => {
+test("cannot be initialized twice", async (t) => {
   const { contract, alice, beneficiary } = t.context.accounts;
   await t.throwsAsync(alice.call(contract, "init", { beneficiary: beneficiary.accountId }));
-}); */
+});
 
 test("sends donations to the beneficiary", async (t) => {
   const { contract, alice, bob, beneficiary } = t.context.accounts;
