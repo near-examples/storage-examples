@@ -3,7 +3,7 @@ use near_units::parse_near;
 use workspaces::prelude::*; 
 use workspaces::{network::Sandbox, Account, Contract, Worker};
 
-const WASM_FILEPATH: &str = "../../out/hello-near.wasm";
+const WASM_FILEPATH: &str = "../../out/donation_contract.wasm";
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -13,6 +13,7 @@ async fn main() -> anyhow::Result<()> {
 
     // create accounts
     let owner = worker.root_account();
+
     let alice = owner
     .create_subaccount(&worker, "alice")
     .initial_balance(parse_near!("30 N"))
@@ -20,49 +21,93 @@ async fn main() -> anyhow::Result<()> {
     .await?
     .into_result()?;
 
+    let bob = owner
+    .create_subaccount(&worker, "bob")
+    .initial_balance(parse_near!("30 N"))
+    .transact()
+    .await?
+    .into_result()?;
+
+    let beneficiary = owner
+    .create_subaccount(&worker, "beneficiary")
+    .initial_balance(parse_near!("30 N"))
+    .transact()
+    .await?
+    .into_result()?;
+
+    // Initialize contract
+    contract.call(&worker, "init")
+            .args_json(json!({"beneficiary": beneficiary.id()}))?
+            .transact()
+            .await?;
+
     // begin tests  
-    test_default_message(&alice, &contract, &worker).await?;
-    test_changes_message(&alice, &contract, &worker).await?;
+    test_donation(&alice, &bob, &beneficiary, &contract, &worker).await?;
+    test_records(&alice, &contract, &worker).await?;
     Ok(())
 }   
 
-async fn test_default_message(
-    user: &Account,
+async fn test_donation(
+    alice: &Account,
+    bob: &Account,
+    beneficiary: &Account,
     contract: &Contract,
     worker: &Worker<Sandbox>,
 ) -> anyhow::Result<()> {
-    let message: String = user
-        .call(&worker, contract.id(), "get_greeting")
-        .args_json(json!({}))?
-        .transact()
+    let balance = beneficiary
+        .view_account(&worker)
         .await?
-        .json()?;
+        .balance;
 
+    alice.call(&worker, contract.id(), "donate")
+         .deposit(parse_near!("1 N"))
+         .transact()
+         .await?;
 
-    assert_eq!(message, "Hello".to_string());
-    println!("      Passed ✅ gets default message");
+    bob.call(&worker, contract.id(), "donate")
+       .deposit(parse_near!("2 N"))
+       .transact()
+       .await?;
+
+    let new_balance = beneficiary.view_account(&worker)
+    .await?
+    .balance;
+
+    const FEES: u128 = parse_near!("0.001 N");
+    assert_eq!(new_balance, balance + parse_near!("3 N") - 2*FEES );
+
+    println!("      Passed ✅ sends donation");
     Ok(())
 }
 
-async fn test_changes_message(
-    user: &Account,
+async fn test_records(
+    alice: &Account,
     contract: &Contract,
     worker: &Worker<Sandbox>,
 ) -> anyhow::Result<()> {
+    let donation_idx: i32 = alice.call(&worker, contract.id(), "donate")
+       .deposit(parse_near!("3 N"))
+       .transact()
+       .await?
+       .json()?;
 
-    user.call(&worker, contract.id(), "set_greeting")
-        .args_json(json!({"message": "Howdy"}))?
-        .transact()
-        .await?;
+    assert_eq!(donation_idx, 3);
 
-    let message: String = user
-        .call(&worker, contract.id(), "get_greeting")
-        .args_json(json!({}))?
-        .transact()
-        .await?
-        .json()?;
+    let donation: serde_json::Value = alice.call(&worker, contract.id(), "get_donation_by_number")
+       .args_json(json!({"donation_number": donation_idx}))?
+       .transact()
+       .await?
+       .json()?;
 
-    assert_eq!(message, "Howdy".to_string());
-    println!("      Passed ✅ changes message");
+    let expected = json!(
+        {
+            "amount": parse_near!("3N").to_string(),
+            "donor": alice.id()
+        }
+    );    
+
+    assert_eq!(donation, expected);
+
+    println!("      Passed ✅ retrieves donation");
     Ok(())
 }

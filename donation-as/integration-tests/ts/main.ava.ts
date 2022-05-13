@@ -46,12 +46,12 @@ test.afterEach(async (t) => {
 });
 
 /* test("cannot be initialized twice", async (t) => {
-  const { root, contract, alice, beneficiary } = t.context.accounts;
+  const { contract, alice, beneficiary } = t.context.accounts;
   await t.throwsAsync(alice.call(contract, "init", { beneficiary: beneficiary.accountId }));
 }); */
 
 test("sends donations to the beneficiary", async (t) => {
-  const { root, contract, alice, bob, beneficiary } = t.context.accounts;
+  const { contract, alice, bob, beneficiary } = t.context.accounts;
 
   const balance = await beneficiary.balance()
   const available = parseFloat(balance.available.toHuman())
@@ -62,9 +62,8 @@ test("sends donations to the beneficiary", async (t) => {
   const new_balance = await beneficiary.balance()
   const new_available = parseFloat(new_balance.available.toHuman())
 
-  // Check the difference is approx 3
-  t.true(new_available - available > 2.99)
-  t.true(new_available - available < 3.01)
+  const FEES: number = 0.001
+  t.is(new_available, available + 3 - 2*FEES)
 });
 
 test("records the donation", async (t) => {
