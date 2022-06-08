@@ -6,20 +6,21 @@ const nearConfig = getConfig(process.env.NODE_ENV || 'development')
 
 // Initialize contract & set global variables
 export async function initContract() {
-  // Initialize connection to the NEAR testnet
+  // Set a connection to the NEAR network
   window.near = await connect(nearConfig)
 
-  // Initializing Wallet based Account. It can work with NEAR testnet wallet that
-  // is hosted at https://wallet.testnet.near.org
+  // Initialize a Wallet Object
   window.walletConnection = new WalletConnection(window.near)
 
-  // Initializing our contract APIs by contract name and configuration
-  window.contract = await new Contract(window.walletConnection.account(), nearConfig.contractName, {
-    // View methods are read only. They don't modify the state, but usually return some value.
-    viewMethods: ['beneficiary', 'get_donation_list', 'total_donations'],
-    // Change methods can modify the state. But you don't receive the returned value when called.
-    changeMethods: ['donate'],
-  })
+  // Initialize a Contract Object (to interact with the contract)
+  window.contract = await new Contract(
+    window.walletConnection.account(), // user's account
+    nearConfig.contractName, // contract's account
+    {
+      viewMethods: ['beneficiary', 'get_donation_list', 'total_donations'],
+      changeMethods: ['donate'],
+    }
+  )
 }
 
 export function logout() {
@@ -29,14 +30,13 @@ export function logout() {
 }
 
 export function login() {
-  // Allow the current app to make calls to the specified contract on the
-  // user's behalf.
-  // This works by creating a new access key for the user's account and storing
-  // the private key in localStorage.
+  // Allows to make calls to the contract on the user's behalf.
+  // Works by creating a new access key for the user's account
+  // and storing the private key in localStorage.
   window.walletConnection.requestSignIn(nearConfig.contractName)
 }
 
-export async function getTransactionResult(txhash){
+export async function getTransactionResult(txhash) {
   const transaction = await window.near.connection.provider.txStatus(txhash, window.walletConnection.getAccountId())
   return providers.getTransactionLastResult(transaction)
 }
@@ -48,15 +48,12 @@ export async function getBeneficiary() {
 export async function latestDonations() {
   const total_donations = await window.contract.total_donations()
 
-  const min = total_donations > 10 ? total_donations - 9 : 1;
-  
+  const min = total_donations > 10 ? total_donations - 9 : 1
+
   let donations = await window.contract.get_donation_list({ from: min, until: total_donations })
 
   for (let i = 0; i < donations.length; i++) {
-    let amount = donations[i].amount.toLocaleString('fullwide', {useGrouping:false})
-    amount = utils.format.formatNearAmount(amount)
-    const rounded_two_decimals = Math.floor(amount * 100) / 100
-    donations[i].amount = rounded_two_decimals
+    donations[i].amount = formatAmount(donations[i].amount)
     donations[i].number = min + i
   }
 
@@ -69,4 +66,11 @@ export async function donate(amount) {
     args: {}, amount: amount
   })
   return response
+}
+
+// Aux method
+function formatAmount(amount) {
+  let formatted = amount.toLocaleString('fullwide', { useGrouping: false })
+  formatted = utils.format.formatNearAmount(formatted)
+  return Math.floor(formatted * 100) / 100
 }
