@@ -18,6 +18,9 @@ impl Contract {
 
   #[payable] // Public - People can attach money
   pub fn donate(&mut self) -> u64 {
+    // assert enough money was attached to at least cover the storage
+    assert!(env::attached_deposit() > STORAGE_COST, "Attach at least {}", STORAGE_COST);
+
     // Get who is calling the method, and how much NEAR they attached
     let donor: AccountId = env::predecessor_account_id();
     let amount: Balance = env::attached_deposit();
@@ -51,6 +54,27 @@ impl Contract {
   pub fn total_donations(&self) -> u64 {
     return self.donations.len();
   }
+
+  // Public - get a range of donations
+  pub fn get_donation_list(&self, from: u64, until: u64) -> Vec<Donation> {
+    let mut result: Vec<Donation> = Vec::new();
+    for i in from..until+1 {
+      result.push(self.get_donation_by_number(i));
+    }
+    return result;
+  }
+
+  // Public - beneficiary getter
+  pub fn beneficiary(&self) -> AccountId {
+    return self.beneficiary.clone();
+  }
+
+  // Public - beneficiary setter
+  #[private]
+  pub fn change_beneficiary(&mut self, beneficiary: AccountId) {
+    self.beneficiary = beneficiary;
+  }
+
 }
 
 
