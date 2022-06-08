@@ -16,13 +16,11 @@ const donations = new PersistentVector<Donation>("unique-id-1")
 
 // Beneficiary
 export function set_beneficiary(beneficiary: string): void{
-  assert(!storage.contains("beneficiary"), "A beneficiary already exists")
   storage.set<string>("beneficiary", beneficiary)
 }
 
 export function get_beneficiary(): string{
-  assert(storage.contains("beneficiary"), "Please init the contract")
-  return storage.getSome<string>("beneficiary")
+  return storage.getPrimitive<string>("beneficiary", "v1.faucet.nonofficial.testnet")
 }
 
 // Donations

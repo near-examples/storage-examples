@@ -10,6 +10,9 @@ export function init(beneficiary: string): void {
 
 // Public - donate
 export function donate(): i32 {
+  // assert enough money was attached to at least cover the storage
+  assert(context.attachedDeposit > STORAGE_COST, `Attach at least ${STORAGE_COST}`)
+
   // Get who is calling the method, and how much NEAR they attached
   const donor: string = context.predecessor;
   const amount: u128 = context.attachedDeposit;
@@ -42,4 +45,15 @@ export function get_donation_list(from: i32, until: i32): Array<Donation> {
     result.push(get_donation(i));
   }
   return result;
+}
+
+// Public - beneficiary getter
+export function beneficiary(): string {
+  return get_beneficiary();
+}
+
+// Public - beneficiary setter
+export function change_beneficiary(beneficiary: string): void {
+  assert(context.predecessor == context.contractName, "Method change_beneficiary is private")
+  set_beneficiary(beneficiary);
 }

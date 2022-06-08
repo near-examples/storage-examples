@@ -11,13 +11,6 @@ describe("Initializing", () => {
     expect(() => { init("beneficiary") }).not.toThrow()
     expect(get_beneficiary()).toBe("beneficiary")
   })
-
-  it("cannot be initialized twice", () => {
-    set_context(Context.contractName, u128.Zero)
-    expect(() => { init("beneficiary") }).not.toThrow()
-    expect(get_beneficiary()).toBe("beneficiary")
-    expect(() => { init("another_beneficiary") }).toThrow()
-  })
 })
 
 describe("Donations", () => {
