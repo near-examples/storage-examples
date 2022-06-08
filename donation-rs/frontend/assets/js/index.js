@@ -65,7 +65,7 @@ async function signedInFlow() {
   // Displaying the signed in flow container
   document.querySelectorAll('.signed-in-flow').forEach(elem => elem.style.display = 'block')
 
-  // Check if there is a transaction hash in the URL (come back from a donation)
+  // Check if there is a transaction hash in the URL
   const urlParams = new URLSearchParams(window.location.search);
   const txhash = urlParams.get("transactionHashes")
 
