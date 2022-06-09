@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "license": "UNLICENSED",
   "scripts": {
-    "build": "cd contract && npm run build && mkdir -p ../out && rm -f ./out/donation_contract.wasm && cp ./build/release/donation_contract.wasm ../out/donation_contract.wasm",
+    "build": "cd contract && npm run build && mkdir -p ../out && rm -f ./out/donation_contract.wasm && cp ./build/release/donation_contract.wasm ../out/main.wasm",
     "deploy": "npm run build && near dev-deploy",
     "start": "npm run deploy && echo The app is starting! && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open",
     "dev": "nodemon --watch contract -e ts --exec \"npm run start\"",
