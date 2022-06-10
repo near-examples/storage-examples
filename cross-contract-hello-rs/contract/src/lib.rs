@@ -22,23 +22,21 @@ impl Contract {
   }
 
   // Public - query external greeting
-  pub fn query_greeting(&self) -> Promise{
+  pub fn query_greeting(&self) -> Promise {
     // Make sure there is enough GAS to execute the callback
     assert!(env::prepaid_gas() >= Gas::from(20*TGAS), "Please attach at least 20 TGAS");
 
     // Create a promise to call HelloNEAR.get_greeting()
-    let promise = hello_near::get_greeting(
-      self.hello_account.clone(),
-      NO_DEPOSIT,
-      Gas::from(5*TGAS)
-    );
+    let promise = hello_near::ext(self.hello_account.clone())
+      .with_static_gas(Gas(5*TGAS))
+      .get_greeting();
 
     // Create a promise to callback query_greeting_callback
-    return promise.then(this_contract::query_greeting_callback(
-      env::current_account_id(),
-      NO_DEPOSIT,
-      Gas::from(5*TGAS),
-    ));
+    return promise.then(
+      Self::ext(env::current_account_id())
+      .with_static_gas(Gas(5*TGAS))
+      .query_greeting_callback()
+    );
   }
 
   #[private] // Public - but only callable by env::current_account_id()
@@ -63,19 +61,16 @@ impl Contract {
     assert!(env::prepaid_gas() >= Gas::from(20*TGAS), "Please attach at least 20 TGAS");
 
     // Create a promise to call HelloNEAR.set_greeting(message:string)
-    let promise = hello_near::set_greeting(
-      new_greeting,
-      self.hello_account.clone(),
-      NO_DEPOSIT,
-      Gas::from(5*TGAS)
-    );
+    let promise = hello_near::ext(self.hello_account.clone())
+      .with_static_gas(Gas(5*TGAS))
+      .set_greeting(new_greeting);
 
     // Create a callback change_greeting_callback
-    return promise.then(this_contract::change_greeting_callback(
-        env::current_account_id(),
-        NO_DEPOSIT,
-        Gas::from(10*TGAS),
-    ));
+    return promise.then(
+      Self::ext(env::current_account_id())
+      .with_static_gas(Gas(10*TGAS))
+      .change_greeting_callback()
+    );
   }
 
   #[private]
