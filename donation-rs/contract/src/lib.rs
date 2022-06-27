@@ -81,7 +81,6 @@ impl Contract {
   pub fn change_beneficiary(&mut self, beneficiary: AccountId) {
     self.beneficiary = beneficiary;
   }
-
 }
 
 
