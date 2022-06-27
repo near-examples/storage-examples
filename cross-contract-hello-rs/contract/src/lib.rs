@@ -17,31 +17,27 @@ impl Contract {
   pub fn new(hello_account: AccountId) -> Self {
     assert!(!env::state_exists(), "Already initialized");
     Self {
-      hello_account: hello_account
+      hello_account,
     }
   }
 
   // Public - query external greeting
   pub fn query_greeting(&self) -> Promise {
-    // Make sure there is enough GAS to execute the callback
-    assert!(env::prepaid_gas() >= Gas::from(20*TGAS), "Please attach at least 20 TGAS");
-
     // Create a promise to call HelloNEAR.get_greeting()
-    let promise = hello_near::ext(self.hello_account.clone())
-      .with_static_gas(Gas(5*TGAS))
-      .get_greeting();
-
-    // Create a promise to callback query_greeting_callback
-    return promise.then(
+    hello_near::ext(self.hello_account.clone())
+      .with_static_gas(Gas(10*TGAS))
+      .get_greeting()
+    .then( // Create a promise to callback query_greeting_callback
       Self::ext(env::current_account_id())
-      .with_static_gas(Gas(5*TGAS))
+      .with_static_gas(Gas(10*TGAS))
       .query_greeting_callback()
-    );
+    )
   }
 
   #[private] // Public - but only callable by env::current_account_id()
   pub fn query_greeting_callback(&self) -> String {
-    if !external::did_promise_succeed() {
+    // Check if the promise succeeded by calling the method outlined in external.rs
+    if !did_promise_succeed() {
       log!("There was an error contacting Hello NEAR");
       return "".to_string();
     }
@@ -52,36 +48,27 @@ impl Contract {
       _ => { log!("There was an error contacting Hello NEAR"); return "".to_string(); },
     };
 
-    return greeting;
+    // Return the greeting
+    greeting
   }
 
   // Public - change external greeting
   pub fn change_greeting(&mut self, new_greeting: String) -> Promise {
-    // Make sure there is enough GAS to execute the callback
-    assert!(env::prepaid_gas() >= Gas::from(20*TGAS), "Please attach at least 20 TGAS");
-
     // Create a promise to call HelloNEAR.set_greeting(message:string)
-    let promise = hello_near::ext(self.hello_account.clone())
-      .with_static_gas(Gas(5*TGAS))
-      .set_greeting(new_greeting);
-
-    // Create a callback change_greeting_callback
-    return promise.then(
+    hello_near::ext(self.hello_account.clone())
+      .with_static_gas(Gas(10*TGAS))
+      .set_greeting(new_greeting)
+    .then( // Create a callback change_greeting_callback
       Self::ext(env::current_account_id())
       .with_static_gas(Gas(10*TGAS))
       .change_greeting_callback()
-    );
+    )
   }
 
   #[private]
   pub fn change_greeting_callback(&mut self) -> bool {
-    if external::did_promise_succeed(){
-      // `set_greeting` succeeded
-      return true;
-    }else{
-      // it failed
-      return false;
-    }
+    // Return whether or not the promise succeeded using the method outlined in external.rs
+    did_promise_succeed()
   }
 }
 
