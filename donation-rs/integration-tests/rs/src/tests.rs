@@ -93,7 +93,7 @@ async fn test_records(
 
     let expected = json!(
         {
-            "total_amount": parse_near!("3N"),
+            "total_amount": parse_near!("3N").to_string(),
             "account_id": bob.id()
         }
     );    
