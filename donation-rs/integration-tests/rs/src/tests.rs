@@ -15,25 +15,25 @@ async fn main() -> anyhow::Result<()> {
     let owner = worker.root_account();
 
     let alice = owner
-    .create_subaccount(&worker, "alice")
-    .initial_balance(parse_near!("30 N"))
-    .transact()
-    .await?
-    .into_result()?;
+        .create_subaccount(&worker, "alice")
+        .initial_balance(parse_near!("30 N"))
+        .transact()
+        .await?
+        .into_result()?;
 
     let bob = owner
-    .create_subaccount(&worker, "bob")
-    .initial_balance(parse_near!("30 N"))
-    .transact()
-    .await?
-    .into_result()?;
+        .create_subaccount(&worker, "bob")
+        .initial_balance(parse_near!("30 N"))
+        .transact()
+        .await?
+        .into_result()?;
 
     let beneficiary = owner
-    .create_subaccount(&worker, "beneficiary")
-    .initial_balance(parse_near!("30 N"))
-    .transact()
-    .await?
-    .into_result()?;
+        .create_subaccount(&worker, "beneficiary")
+        .initial_balance(parse_near!("30 N"))
+        .transact()
+        .await?
+        .into_result()?;
 
     // Initialize contract
     contract.call(&worker, "new")
@@ -42,14 +42,13 @@ async fn main() -> anyhow::Result<()> {
             .await?;
 
     // begin tests  
-    test_donation(&alice, &bob, &beneficiary, &contract, &worker).await?;
-    test_records(&alice, &contract, &worker).await?;
+    test_donation(&alice, &beneficiary, &contract, &worker).await?;
+    test_records(&bob, &contract, &worker).await?;
     Ok(())
 }   
 
 async fn test_donation(
     alice: &Account,
-    bob: &Account,
     beneficiary: &Account,
     contract: &Contract,
     worker: &Worker<Sandbox>,
@@ -64,45 +63,38 @@ async fn test_donation(
          .transact()
          .await?;
 
-    bob.call(&worker, contract.id(), "donate")
-       .deposit(parse_near!("2 N"))
-       .transact()
-       .await?;
-
     let new_balance = beneficiary.view_account(&worker)
     .await?
     .balance;
 
     const FEES: u128 = parse_near!("0.001 N");
-    assert_eq!(new_balance, balance + parse_near!("3 N") - 2*FEES );
+    assert_eq!(new_balance, balance + parse_near!("1 N") - FEES );
 
     println!("      Passed ✅ sends donation");
     Ok(())
 }
 
 async fn test_records(
-    alice: &Account,
+    bob: &Account,
     contract: &Contract,
     worker: &Worker<Sandbox>,
 ) -> anyhow::Result<()> {
-    let donation_idx: i32 = alice.call(&worker, contract.id(), "donate")
+    bob.call(&worker, contract.id(), "donate")
        .deposit(parse_near!("3 N"))
        .transact()
        .await?
        .json()?;
 
-    assert_eq!(donation_idx, 3);
-
-    let donation: serde_json::Value = alice.call(&worker, contract.id(), "get_donation_by_number")
-       .args_json(json!({"donation_number": donation_idx}))?
+    let donation: serde_json::Value = bob.call(&worker, contract.id(), "get_donation_for_account")
+       .args_json(json!({"account_id": bob.id()}))?
        .transact()
        .await?
        .json()?;
 
     let expected = json!(
         {
-            "amount": parse_near!("3N"),
-            "donor": alice.id()
+            "total_amount": parse_near!("3N"),
+            "account_id": bob.id()
         }
     );    
 
