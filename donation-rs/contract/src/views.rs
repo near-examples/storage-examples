@@ -7,7 +7,7 @@ use crate::*;
 #[serde(crate = "near_sdk::serde")]
 pub struct Donation {
   pub account_id: AccountId, 
-  pub total_amount: u128,
+  pub total_amount: U128,
 }
 
 #[near_bindgen]
@@ -16,7 +16,7 @@ impl Contract {
     pub fn get_donation_for_account(&self, account_id: AccountId) -> Donation {
         Donation {
             account_id: account_id.clone(),
-            total_amount: self.donations.get(&account_id).unwrap_or(0)
+            total_amount: U128(self.donations.get(&account_id).unwrap_or(0))
         }
     }
 

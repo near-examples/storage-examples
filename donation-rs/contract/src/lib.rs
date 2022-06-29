@@ -1,6 +1,6 @@
 use near_sdk::json_types::U128;
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
-use near_sdk::{env, log, near_bindgen, AccountId, Promise, Balance, PanicOnDefault};
+use near_sdk::{env, log, near_bindgen, AccountId, Promise, Balance};
 use near_sdk::collections::{UnorderedMap};
 
 pub const STORAGE_COST: u128 = 1_000_000_000_000_000_000_000;
@@ -8,10 +8,19 @@ pub const STORAGE_COST: u128 = 1_000_000_000_000_000_000_000;
 mod views;
 
 #[near_bindgen]
-#[derive(PanicOnDefault, BorshDeserialize, BorshSerialize)]
+#[derive(BorshDeserialize, BorshSerialize)]
 pub struct Contract {
   pub beneficiary: AccountId,
   pub donations: UnorderedMap<AccountId, u128>,
+}
+
+impl Default for Contract {
+  fn default() -> Self {
+    Self{
+      beneficiary: "v1.faucet.nonofficial.testnet".parse().unwrap(),
+      donations: UnorderedMap::new(b"d"),
+    }
+  }
 }
 
 #[near_bindgen]
@@ -81,7 +90,7 @@ mod tests {
       let first_donation = contract.get_donation_for_account("donor_a".parse().unwrap());
 
       // Check the donation was recorded correctly
-      assert_eq!(first_donation.total_amount, 1*NEAR - STORAGE_COST);
+      assert_eq!(first_donation.total_amount.0, 1*NEAR - STORAGE_COST);
 
       // Make another donation
       set_context("donor_b", 2*NEAR);
@@ -89,7 +98,7 @@ mod tests {
       let second_donation = contract.get_donation_for_account("donor_b".parse().unwrap());
 
       // Check the donation was recorded correctly
-      assert_eq!(second_donation.total_amount, 2*NEAR - STORAGE_COST);
+      assert_eq!(second_donation.total_amount.0, 2*NEAR - STORAGE_COST);
 
       // User A makes another donation on top of their original
       set_context("donor_a", 1*NEAR);
@@ -97,7 +106,7 @@ mod tests {
       let first_donation = contract.get_donation_for_account("donor_a".parse().unwrap());
 
       // Check the donation was recorded correctly
-      assert_eq!(first_donation.total_amount, (1*NEAR - STORAGE_COST) * 2);
+      assert_eq!(first_donation.total_amount.0, (1*NEAR - STORAGE_COST) * 2);
 
       assert_eq!(contract.total_donations(), 2);
   }

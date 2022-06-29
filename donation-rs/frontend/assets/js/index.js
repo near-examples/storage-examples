@@ -1,3 +1,4 @@
+import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import 'regenerator-runtime/runtime'
 import { initContract, login, logout, donate,
          getBeneficiary, latestDonations, getTransactionResult } from './near/utils'
@@ -97,9 +98,8 @@ async function getAndShowDonations(){
     let tr = document.createElement('tr')
     tr.innerHTML = `
       <tr>
-        <th scope="row">${elem.number}</th>
-        <td>${elem.donor}</td>
-        <td>${elem.amount}</td>
+        <th scope="row">${elem.account_id}</th>
+        <td>${formatNearAmount(elem.total_amount)}</td>
       </tr>
     `
     document.getElementById('donations-table').appendChild(tr)
