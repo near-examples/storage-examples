@@ -1,5 +1,6 @@
 import { Worker, NEAR, NearAccount } from "near-workspaces";
 import anyTest, { TestFn } from "ava";
+import { parseNearAmount } from "near-api-js/lib/utils/format";
 
 const test = anyTest as TestFn<{
   worker: Worker;
@@ -50,29 +51,24 @@ test("sends donations to the beneficiary", async (t) => {
   const available = parseFloat(balance.available.toHuman())
 
   await alice.call(contract, "donate", {}, {attachedDeposit: NEAR.parse("1 N").toString()});
-  await bob.call(contract, "donate", {}, {attachedDeposit: NEAR.parse("2 N").toString()});
 
   const new_balance = await beneficiary.balance()
   const new_available = parseFloat(new_balance.available.toHuman())
 
   const FEES: number = 0.001
-  t.is(new_available, available + 3 - 2*FEES)
+  t.is(new_available, available + 1 - FEES)
 });
 
 test("records the donation", async (t) => {
-  const { contract, alice, bob } = t.context.accounts;
+  const { contract, bob } = t.context.accounts;
 
-  await alice.call(contract, "donate", {}, {attachedDeposit: NEAR.parse("1 N").toString()});
   await bob.call(contract, "donate", {}, {attachedDeposit: NEAR.parse("2 N").toString()});
-  const donation_idx = await alice.call(contract, "donate", {}, {attachedDeposit: NEAR.parse("3 N").toString()});
 
-  t.is(donation_idx, 3)
-
-  class Donation{ donor: string = ""; amount: Number = 0; }
-  const donation: Donation = await contract.view("get_donation_by_number", {donation_number: donation_idx})
+  class Donation{ total_amount: string = ""; account_id: string = ""; }
+  const donation: Donation = await contract.view("get_donation_for_account", {account_id: bob.accountId})
   
-  t.is(donation.donor, alice.accountId)
-  t.is(donation.amount, 3e+24)
+  t.is(donation.account_id, bob.accountId)
+  t.is(donation.total_amount, parseNearAmount("3"))
 });
 
 test.afterEach(async (t) => {
