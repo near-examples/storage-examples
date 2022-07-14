@@ -99,7 +99,7 @@ mod tests {
       let first_donation = contract.get_donation_for_account("donor_a".parse().unwrap());
 
       // Check the donation was recorded correctly
-      assert_eq!(first_donation.total_amount.0, 1*NEAR - STORAGE_COST);
+      assert_eq!(first_donation.total_amount.0, 1*NEAR);
 
       // Make another donation
       set_context("donor_b", 2*NEAR);
@@ -107,7 +107,7 @@ mod tests {
       let second_donation = contract.get_donation_for_account("donor_b".parse().unwrap());
 
       // Check the donation was recorded correctly
-      assert_eq!(second_donation.total_amount.0, 2*NEAR - STORAGE_COST);
+      assert_eq!(second_donation.total_amount.0, 2*NEAR);
 
       // User A makes another donation on top of their original
       set_context("donor_a", 1*NEAR);
@@ -115,7 +115,7 @@ mod tests {
       let first_donation = contract.get_donation_for_account("donor_a".parse().unwrap());
 
       // Check the donation was recorded correctly
-      assert_eq!(first_donation.total_amount.0, (1*NEAR - STORAGE_COST) * 2);
+      assert_eq!(first_donation.total_amount.0, 1*NEAR * 2);
 
       assert_eq!(contract.total_donations(), 2);
   }
