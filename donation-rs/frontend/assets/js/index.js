@@ -73,7 +73,7 @@ async function signedInFlow() {
   if(txhash !== null){
     // Get result from the transaction
     let result = await getTransactionResult(txhash)
-    document.querySelector('[data-behavior=donation-number]').innerText = result
+    document.querySelector('[data-behavior=donation-so-far]').innerText = result
 
     // show notification
     document.querySelector('[data-behavior=notification]').style.display = 'block'

@@ -37,7 +37,8 @@ export function login() {
 
 export async function getTransactionResult(txhash) {
   const transaction = await window.near.connection.provider.txStatus(txhash, window.walletConnection.getAccountId())
-  return providers.getTransactionLastResult(transaction)
+  let donated_so_far = providers.getTransactionLastResult(transaction)
+  return utils.format.formatNearAmount(donated_so_far);
 }
 
 export async function getBeneficiary() {

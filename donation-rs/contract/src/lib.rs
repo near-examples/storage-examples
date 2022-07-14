@@ -36,25 +36,34 @@ impl Contract {
   }
 
   #[payable] // Public - People can attach money
-  pub fn donate(&mut self) {
-    // assert enough money was attached to at least cover the storage
-    let mut donation_amount: Balance = env::attached_deposit();
-    assert!(donation_amount >= STORAGE_COST, "Attach at least {} yoctoNEAR", STORAGE_COST);
-    // Subtract the storage cost from the donation amount
-    donation_amount -= STORAGE_COST;
-
-    // Get who is calling the method
+  pub fn donate(&mut self) -> U128 {
+    // Get who is calling the method and how much $NEAR they attached
     let donor: AccountId = env::predecessor_account_id();
+    let donation_amount: Balance = env::attached_deposit();
 
-    // Record the donation less the storage cost. If the donor already has a donation, add to it.
-    let mut current_donation = self.donations.get(&donor).unwrap_or(0);
-    current_donation += donation_amount;
-    self.donations.insert(&donor, &current_donation);
+    let mut donated_so_far = self.donations.get(&donor).unwrap_or(0);
+
+    let to_transfer: Balance = if donated_so_far == 0 {
+      // This is the user's first donation, lets register it, which increases storage
+      assert!(donation_amount > STORAGE_COST, "Attach at least {} yoctoNEAR", STORAGE_COST);
+
+      // Subtract the storage cost to the amount to transfer
+      donation_amount - STORAGE_COST
+    }else{
+      donation_amount
+    };
+
+    // Persist in storage the amount donated so far
+    donated_so_far += donation_amount;
+    self.donations.insert(&donor, &donated_so_far);
     
-    log!("Thank you {} for donating {}! Your total donations are now {}", donor.clone(), donation_amount, current_donation);
+    log!("Thank you {} for donating {}! You donated a total of {}", donor.clone(), donation_amount, donated_so_far);
     
     // Send the money to the beneficiary
-    Promise::new(self.beneficiary.clone()).transfer(donation_amount);
+    Promise::new(self.beneficiary.clone()).transfer(to_transfer);
+
+    // Return the total amount donated so far
+    U128(donated_so_far)
   }
 
   // Public - but only callable by env::current_account_id(). Sets the beneficiary

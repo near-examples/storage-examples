@@ -12,13 +12,13 @@ pub struct Donation {
 
 #[near_bindgen]
 impl Contract {
-    // Public - get donation by account ID
-    pub fn get_donation_for_account(&self, account_id: AccountId) -> Donation {
-        Donation {
-            account_id: account_id.clone(),
-            total_amount: U128(self.donations.get(&account_id).unwrap_or(0))
-        }
+  // Public - get donation by account ID
+  pub fn get_donation_for_account(&self, account_id: AccountId) -> Donation {
+    Donation {
+      account_id: account_id.clone(),
+      total_amount: U128(self.donations.get(&account_id).unwrap_or(0))
     }
+  }
 
     // Public - get total number of donations
     pub fn total_donations(&self) -> u64 {
@@ -32,13 +32,13 @@ impl Contract {
 
         //iterate through donation
         self.donations.keys()
-            //skip to the index we specified in the start variable
-            .skip(start as usize) 
-            //take the first "limit" elements in the vector. If we didn't specify a limit, use 50
-            .take(limit.unwrap_or(50) as usize) 
-            .map(|account| self.get_donation_for_account(account))
-            //since we turned map into an iterator, we need to turn it back into a vector to return
-            .collect()
+          //skip to the index we specified in the start variable
+          .skip(start as usize) 
+          //take the first "limit" elements in the vector. If we didn't specify a limit, use 50
+          .take(limit.unwrap_or(50) as usize) 
+          .map(|account| self.get_donation_for_account(account))
+          //since we turned map into an iterator, we need to turn it back into a vector to return
+          .collect()
     }
 
     // Public - beneficiary getter

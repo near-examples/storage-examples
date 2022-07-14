@@ -82,8 +82,7 @@ async fn test_records(
     bob.call(&worker, contract.id(), "donate")
        .deposit(parse_near!("3 N"))
        .transact()
-       .await?
-       .json()?;
+       .await?;
 
     let donation: serde_json::Value = bob.call(&worker, contract.id(), "get_donation_for_account")
        .args_json(json!({"account_id": bob.id()}))?
