@@ -1,8 +1,27 @@
-use near_sdk::collections::Vector;
+use near_sdk::json_types::U128;
+use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::{env, log, near_bindgen, AccountId, Promise, Balance};
+use near_sdk::collections::{UnorderedMap};
 
-pub mod model;
-pub use crate::model::*;
+pub const STORAGE_COST: u128 = 1_000_000_000_000_000_000_000;
+
+mod views;
+
+#[near_bindgen]
+#[derive(BorshDeserialize, BorshSerialize)]
+pub struct Contract {
+  pub beneficiary: AccountId,
+  pub donations: UnorderedMap<AccountId, u128>,
+}
+
+impl Default for Contract {
+  fn default() -> Self {
+    Self{
+      beneficiary: "v1.faucet.nonofficial.testnet".parse().unwrap(),
+      donations: UnorderedMap::new(b"d"),
+    }
+  }
+}
 
 #[near_bindgen]
 impl Contract {
@@ -11,70 +30,47 @@ impl Contract {
   pub fn new(beneficiary: AccountId) -> Self {
     assert!(!env::state_exists(), "Already initialized");
     Self {
-      beneficiary: beneficiary,
-      donations: Vector::new(b"vec-uid-1".to_vec()),
+      beneficiary,
+      donations: UnorderedMap::new(b"d"),
     }
   }
 
   #[payable] // Public - People can attach money
-  pub fn donate(&mut self) -> u64 {
-    // assert enough money was attached to at least cover the storage
-    assert!(env::attached_deposit() > STORAGE_COST, "Attach at least {}", STORAGE_COST);
-
-    // Get who is calling the method, and how much NEAR they attached
+  pub fn donate(&mut self) -> U128 {
+    // Get who is calling the method and how much $NEAR they attached
     let donor: AccountId = env::predecessor_account_id();
-    let amount: Balance = env::attached_deposit();
+    let donation_amount: Balance = env::attached_deposit();
 
-    // Record the donation
-    let donation_number: u64 = self.add_donation(donor.clone(), amount);
-    log!("Thank you {}! donation number: {}", donor.clone(), donation_number);
+    let mut donated_so_far = self.donations.get(&donor).unwrap_or(0);
 
+    let to_transfer: Balance = if donated_so_far == 0 {
+      // This is the user's first donation, lets register it, which increases storage
+      assert!(donation_amount > STORAGE_COST, "Attach at least {} yoctoNEAR", STORAGE_COST);
+
+      // Subtract the storage cost to the amount to transfer
+      donation_amount - STORAGE_COST
+    }else{
+      donation_amount
+    };
+
+    // Persist in storage the amount donated so far
+    donated_so_far += donation_amount;
+    self.donations.insert(&donor, &donated_so_far);
+    
+    log!("Thank you {} for donating {}! You donated a total of {}", donor.clone(), donation_amount, donated_so_far);
+    
     // Send the money to the beneficiary
-    Promise::new(self.beneficiary.clone()).transfer(amount - STORAGE_COST);
+    Promise::new(self.beneficiary.clone()).transfer(to_transfer);
 
-    return donation_number;
+    // Return the total amount donated so far
+    U128(donated_so_far)
   }
 
-  // Public - get donation by number
-  pub fn get_donation_by_number(&self, donation_number: u64) -> Donation {
-    match self.donations.get(donation_number - 1) {
-      None => panic!("Error: Invalid donation number"),
-      Some(value) => value,
-    }
-  }
-
-  // Private - Add donation
-  fn add_donation(&mut self, donor: AccountId, amount: Balance) -> u64 {
-    let donation: Donation = Donation { donor, amount };
-    self.donations.push(&donation);
-    return self.donations.len();
-  }
-
-  // Public - get total number of donations
-  pub fn total_donations(&self) -> u64 {
-    return self.donations.len();
-  }
-
-  // Public - get a range of donations
-  pub fn get_donation_list(&self, from: u64, until: u64) -> Vec<Donation> {
-    let mut result: Vec<Donation> = Vec::new();
-    for i in from..until+1 {
-      result.push(self.get_donation_by_number(i));
-    }
-    return result;
-  }
-
-  // Public - beneficiary getter
-  pub fn beneficiary(&self) -> AccountId {
-    return self.beneficiary.clone();
-  }
-
-  // Public - beneficiary setter
+  // Public - but only callable by env::current_account_id(). Sets the beneficiary
   #[private]
   pub fn change_beneficiary(&mut self, beneficiary: AccountId) {
     self.beneficiary = beneficiary;
   }
-
 }
 
 
@@ -99,23 +95,27 @@ mod tests {
 
       // Make a donation
       set_context("donor_a", 1*NEAR);
-      let first_donation_idx = contract.donate();
-      let first_donation: Donation = contract.get_donation_by_number(first_donation_idx);
+      contract.donate();
+      let first_donation = contract.get_donation_for_account("donor_a".parse().unwrap());
 
       // Check the donation was recorded correctly
-      assert_eq!(first_donation_idx, 1);
-      assert_eq!(first_donation.donor, "donor_a".parse().unwrap());
-      assert_eq!(first_donation.amount, 1*NEAR);
+      assert_eq!(first_donation.total_amount.0, 1*NEAR);
 
       // Make another donation
       set_context("donor_b", 2*NEAR);
-      let second_donation_idx = contract.donate();
-      let second_donation: Donation = contract.get_donation_by_number(second_donation_idx);
+      contract.donate();
+      let second_donation = contract.get_donation_for_account("donor_b".parse().unwrap());
 
       // Check the donation was recorded correctly
-      assert_eq!(second_donation_idx, 2);
-      assert_eq!(second_donation.donor, "donor_b".parse().unwrap());
-      assert_eq!(second_donation.amount, 2*NEAR);
+      assert_eq!(second_donation.total_amount.0, 2*NEAR);
+
+      // User A makes another donation on top of their original
+      set_context("donor_a", 1*NEAR);
+      contract.donate();
+      let first_donation = contract.get_donation_for_account("donor_a".parse().unwrap());
+
+      // Check the donation was recorded correctly
+      assert_eq!(first_donation.total_amount.0, 1*NEAR * 2);
 
       assert_eq!(contract.total_donations(), 2);
   }

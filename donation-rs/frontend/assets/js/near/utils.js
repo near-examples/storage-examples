@@ -16,7 +16,7 @@ export async function initContract() {
     window.walletConnection.account(), // user's account
     nearConfig.contractName, // contract's account
     {
-      viewMethods: ['beneficiary', 'get_donation_list', 'total_donations'],
+      viewMethods: ['beneficiary', 'get_donations', 'total_donations'],
       changeMethods: ['donate'],
     }
   )
@@ -37,7 +37,8 @@ export function login() {
 
 export async function getTransactionResult(txhash) {
   const transaction = await window.near.connection.provider.txStatus(txhash, window.walletConnection.getAccountId())
-  return providers.getTransactionLastResult(transaction)
+  let donated_so_far = providers.getTransactionLastResult(transaction)
+  return utils.format.formatNearAmount(donated_so_far);
 }
 
 export async function getBeneficiary() {
@@ -47,15 +48,10 @@ export async function getBeneficiary() {
 export async function latestDonations() {
   const total_donations = await window.contract.total_donations()
 
-  const min = total_donations > 10 ? total_donations - 9 : 1
+  const min = total_donations > 10 ? total_donations - 9 : 0
 
-  let donations = await window.contract.get_donation_list({ from: min, until: total_donations })
-
-  for (let i = 0; i < donations.length; i++) {
-    donations[i].amount = formatAmount(donations[i].amount)
-    donations[i].number = min + i
-  }
-
+  let donations = await window.contract.get_donations({ from_index: min.toString(), limit: total_donations })
+  
   return donations
 }
 
@@ -65,11 +61,4 @@ export async function donate(amount) {
     args: {}, amount: amount
   })
   return response
-}
-
-// Aux method
-function formatAmount(amount) {
-  let formatted = amount.toLocaleString('fullwide', { useGrouping: false })
-  formatted = utils.format.formatNearAmount(formatted)
-  return Math.floor(formatted * 100) / 100
 }
