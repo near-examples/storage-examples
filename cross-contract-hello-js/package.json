@@ -1,0 +1,24 @@
+{
+    "name": "standalone-examples",
+    "version": "1.0.0",
+    "description": "Cross-contract example with near-sdk-js",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+      "build": "near-sdk build src/status-message.js build/status-message.wasm && near-sdk build src/cross-contract-call.js build/cross-contract-call.wasm",
+      "rebuild": "cd .. && yarn build && cd examples && rm -rf node_modules && rm -rf build && yarn && yarn build",
+      "test:integration": "ava __tests__/test-cross-contract-call.ava.js"
+    },
+    "author": "Near Inc <hello@nearprotocol.com>",
+    "license": "MIT",
+    "dependencies": {
+      "lodash-es": "^4.17.21",
+      "near-sdk-js": "^0.4.0"
+    },
+    "devDependencies": {
+      "ava": "^4.2.0",
+      "typescript": "^4.7.4",
+      "near-workspaces": "2.0.0"
+    }
+  }
+  
