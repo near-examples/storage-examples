@@ -12,7 +12,7 @@ test.beforeEach(async (t) => {
     const xcc = await root.createAndDeploy(root.getSubAccount("xcc").accountId, "./build/xcc.wasm");
 
     // Deploy status-message the contract.
-    const helloNear = await root.createAndDeploy(root.getSubAccount("hello-near").accountId, "./build/hello-near.wasm");
+    const helloNear = await root.createAndDeploy(root.getSubAccount("hello-near").accountId, "./extra/hello-near.wasm");
 
     // Create test account alice
     const alice = await root.createSubAccount("alice");
