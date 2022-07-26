@@ -1,0 +1,23 @@
+{
+    "name": "fungible-token-js-example",
+    "version": "1.0.0",
+    "description": "fungible token example with near-sdk-js",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+      "build": "near-sdk build src/index.js build/fungible-token.wasm",
+      "rebuild": "rm -rf node_modules && rm -f package-lock.json && rm -rf build && npm i && npm run build",
+      "test": "ava --verbose"
+    },
+    "author": "Near Inc <hello@nearprotocol.com>",
+    "license": "MIT",
+    "dependencies": {
+      "lodash-es": "^4.17.21",
+      "near-sdk-js": "near/near-sdk-js#v0.4.0-2"
+    },
+    "devDependencies": {
+      "ava": "^4.2.0",
+      "typescript": "^4.7.4",
+      "near-workspaces": "2.0.0"
+    }
+  }

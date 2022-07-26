@@ -27,3 +27,5 @@ jobs:
         run: cd storage-rs && yarn && yarn test
       - name: test:storage:as
         run: cd storage-as && yarn && yarn test
+      - name: test:fungible-token:js
+        run: cd fungible-token-js && yarn && yarn test
