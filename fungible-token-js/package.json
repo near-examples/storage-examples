@@ -5,7 +5,7 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-      "build": "near-sdk build src/index.js build/fungible-token.wasm",
+      "build": "near-sdk build src/index.js build/fungible-token.wasm && near-sdk build src/helper.js build/fungible-token-helper.wasm",
       "rebuild": "rm -rf node_modules && rm -f package-lock.json && rm -rf build && npm i && npm run build",
       "test": "ava --verbose --timeout=10m"
     },

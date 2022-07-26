@@ -83,25 +83,18 @@ function storageHasKey(key) {
     return false;
   }
 }
-function jsvmCallRaw(contractName, method, args) {
-  env.jsvm_call(contractName, method, JSON.stringify(args), 0);
-  return env.read_register(0);
-}
-function jsvmCall(contractName, method, args) {
-  let ret = jsvmCallRaw(contractName, method, args);
-
-  if (ret === null) {
-    return ret;
-  }
-
-  return JSON.parse(ret);
-}
 function storageGetEvicted() {
   return env.read_register(EVICTED_REGISTER);
 }
 function input() {
   env.input(0);
   return env.read_register(0);
+}
+function promiseBatchCreate(accountId) {
+  return env.promise_batch_create(accountId);
+}
+function promiseBatchActionFunctionCall(promiseIndex, methodName, args, amount, gas) {
+  env.promise_batch_action_function_call(promiseIndex, methodName, args, amount, gas);
 }
 var PromiseResult;
 
@@ -110,6 +103,9 @@ var PromiseResult;
   PromiseResult[PromiseResult["Successful"] = 1] = "Successful";
   PromiseResult[PromiseResult["Failed"] = 2] = "Failed";
 })(PromiseResult || (PromiseResult = {}));
+function promiseReturn(promiseIdx) {
+  env.promise_return(promiseIdx);
+}
 function storageWrite(key, value) {
   let exist = env.storage_write(key, value, EVICTED_REGISTER);
 
@@ -291,15 +287,15 @@ let FungibleToken = NearBindgen(_class = (_class2 = class FungibleToken extends 
       amount,
       memo
     });
-    let onTransferRet = jsvmCall(receiverId, "ftOnTransfer", {
-      senderId,
-      amount,
-      msg,
-      receiverId
-    }); // In JS, do not need a callback, ftResolveTransfer after ftOnTransfer Returns
-    // If any logic after ftOnTransfer Returns is required, just do it on onTransferRet.
-
-    return onTransferRet;
+    const promise = promiseBatchCreate(receiverId);
+    const params = {
+      senderId: senderId,
+      amount: amount,
+      msg: msg,
+      receiverId: receiverId
+    };
+    promiseBatchActionFunctionCall(promise, 'ftOnTransfer', JSON.stringify(params), 0, 30000000000000);
+    return promiseReturn();
   }
 
   ftTotalSupply() {

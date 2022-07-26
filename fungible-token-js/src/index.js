@@ -56,10 +56,10 @@ class FungibleToken extends NearContract {
     ftTransferCall({ receiverId, amount, memo, msg }) {
         let senderId = near.predecessorAccountId();
         this.internalTransfer({ senderId, receiverId, amount, memo });
-        let onTransferRet = near.jsvmCall(receiverId, "ftOnTransfer", { senderId, amount, msg, receiverId });
-        // In JS, do not need a callback, ftResolveTransfer after ftOnTransfer Returns
-        // If any logic after ftOnTransfer Returns is required, just do it on onTransferRet.
-        return onTransferRet;
+        const promise = near.promiseBatchCreate(receiverId);
+        const params = { senderId: senderId, amount: amount, msg: msg, receiverId: receiverId };
+        near.promiseBatchActionFunctionCall(promise, 'ftOnTransfer', JSON.stringify(params), 0, 30000000000000);        
+        return near.promiseReturn();
     }
 
     @view
