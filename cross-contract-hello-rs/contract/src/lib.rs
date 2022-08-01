@@ -73,3 +73,18 @@ impl Contract {
     }
   }
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const HELLO_NEAR: &str = "beneficiary";
+
+    #[test]
+    fn initializes() {
+        let beneficiary: AccountId = HELLO_NEAR.parse().unwrap();
+        let contract = Contract::new(beneficiary);
+        assert_eq!(contract.hello_account, HELLO_NEAR.parse().unwrap())
+    }
+}
