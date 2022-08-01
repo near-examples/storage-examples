@@ -7,7 +7,7 @@
     "jest": "npm run build && jest test --runInBand",
     "build": "npm run build:rustup && npm run build:cpwasm",
       "build:rustup": "cd contract && rustup target add wasm32-unknown-unknown && cargo build --all --target wasm32-unknown-unknown --release",
-      "build:cpwasm": "mkdir -p out && rm -f ./out/main.wasm && cp ./contract/target/wasm32-unknown-unknown/release/donation_contract.wasm ./out/main.wasm",
+      "build:cpwasm": "mkdir -p out && rm -f ./out/main.wasm && cp ./contract/target/wasm32-unknown-unknown/release/cross_contract_call.wasm ./out/main.wasm",
     "deploy": "npm run build && near dev-deploy"
   },
   "devDependencies": {
