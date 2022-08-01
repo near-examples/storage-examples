@@ -1,5 +1,5 @@
 [package]
-name = "donation_contract"
+name = "cross_contract_call"
 version = "1.0.0"
 authors = ["Guillermo Gallardo <guillermo@near.org>"]
 edition = "2018"
