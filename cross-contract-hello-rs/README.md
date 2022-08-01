@@ -1,3 +1,3 @@
-# Donation in RUST
+# Cross-Contract in RUST
 
-An example contract writen in RUST
+An example for cross-contract code writen in RUST

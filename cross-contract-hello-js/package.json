@@ -1,0 +1,23 @@
+{
+  "name": "standalone-examples",
+  "version": "1.0.0",
+  "description": "Cross-contract example with near-sdk-js",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "near-sdk-js build src/index.js build/xcc.wasm",
+    "rebuild": "rm -rf node_modules && rm -rf build && npm i && npm run build",
+    "test": "npm run build && ava --verbose --timeout=10m"
+  },
+  "author": "Near Inc <hello@nearprotocol.com>",
+  "license": "MIT",
+  "dependencies": {
+    "lodash-es": "^4.17.21",
+    "near-sdk-js": "^v0.4.0-2"
+  },
+  "devDependencies": {
+    "ava": "^4.3.1",
+    "typescript": "^4.7.4",
+    "near-workspaces": "2.0.0"
+  }
+}
