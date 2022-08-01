@@ -7,7 +7,7 @@
   "scripts": {
     "build": "near-sdk-js build src/index.js build/xcc.wasm",
     "rebuild": "rm -rf node_modules && rm -rf build && npm i && npm run build",
-    "test": "ava --verbose --timeout=10m"
+    "test": "npm run build && ava --verbose --timeout=10m"
   },
   "author": "Near Inc <hello@nearprotocol.com>",
   "license": "MIT",
