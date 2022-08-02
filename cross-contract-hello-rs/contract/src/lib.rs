@@ -1,5 +1,5 @@
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
-use near_sdk::{env, log, near_bindgen, AccountId, Gas, Promise, PromiseResult, PanicOnDefault};
+use near_sdk::{env, log, near_bindgen, AccountId, Gas, Promise, PromiseError, PanicOnDefault};
 
 pub mod external;
 pub use crate::external::*;
@@ -36,20 +36,15 @@ impl Contract {
   }
 
   #[private] // Public - but only callable by env::current_account_id()
-  pub fn query_greeting_callback(&self) -> String {
+  pub fn query_greeting_callback(&self, #[callback_result] call_result: Result<String, PromiseError>) -> String {
     // Check if the promise succeeded by calling the method outlined in external.rs
-    if !did_promise_succeed() {
+    if call_result.is_err() {
       log!("There was an error contacting Hello NEAR");
       return "".to_string();
     }
 
-    // Get response, return "" if failed
-    let greeting: String = match env::promise_result(0) {
-      PromiseResult::Successful(value) => near_sdk::serde_json::from_slice::<String>(&value).unwrap(),
-      _ => { log!("There was an error contacting Hello NEAR"); return "".to_string(); },
-    };
-
     // Return the greeting
+    let greeting: String = call_result.unwrap();
     greeting
   }
 
@@ -67,15 +62,13 @@ impl Contract {
   }
 
   #[private]
-  pub fn change_greeting_callback(&mut self) -> bool {
+  pub fn change_greeting_callback(&mut self, #[callback_result] call_result: Result<(), PromiseError>) -> bool {
     // Return whether or not the promise succeeded using the method outlined in external.rs
-    if did_promise_succeed() {
-      env::log_str("Promise was successful!");
-      // `set_greeting` succeeded
+    if call_result.is_err() {
+      env::log_str("set_greeting was successful!");
       return true;
     } else {
-      env::log_str("Promise failed...");
-      // it failed
+      env::log_str("set_greeting failed...");
       return false;
     }
   }

@@ -239,6 +239,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "cross_contract_call"
+version = "1.0.0"
+dependencies = [
+ "near-sdk",
+ "uint 0.8.5",
+]
+
+[[package]]
 name = "crunchy"
 version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -307,14 +315,6 @@ checksum = "f2fb860ca6fafa5552fb6d0e816a69c8e49f0908bf524e30a90d97c85892d506"
 dependencies = [
  "block-buffer 0.10.2",
  "crypto-common",
-]
-
-[[package]]
-name = "donation_contract"
-version = "1.0.0"
-dependencies = [
- "near-sdk",
- "uint 0.8.5",
 ]
 
 [[package]]
