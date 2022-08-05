@@ -13,7 +13,7 @@
   "license": "MIT",
   "dependencies": {
     "lodash-es": "^4.17.21",
-    "near-sdk-js": "^v0.4.0-2"
+    "near-sdk-js": "^v0.4.0-3"
   },
   "devDependencies": {
     "ava": "^4.3.1",
