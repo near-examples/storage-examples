@@ -5,26 +5,20 @@ const ONE_NEAR = BigInt("1000000000000000000000000");
 
 @NearBindgen
 class CollectionsContract extends NearContract {
-  vector: Vector<bigint>;
-  map: UnorderedMap<String, BigInt>;
-  set: LookupSet<BigInt>;
+  vector: Vector;
+  map: UnorderedMap;
+  set: LookupSet;
   demo_string: String;
 
-  constructor({demo_string} = {demo_string: String}) {
+  constructor({demo_string}: {demo_string: string}) {
     super()
-    this.vector = new Vector<bigint>('unique-id-vector1');
-    this.map = new UnorderedMap<String, BigInt>('unique-id-map1');
-    this.set = new LookupSet<BigInt>('unique-id-set1');
+    this.vector = new Vector('unique-id-vector1');
+    this.map = new UnorderedMap('unique-id-map1');
+    this.set = new LookupSet('unique-id-set1');
     this.demo_string = demo_string.toString();
   }
 
-  // Override the deserializer to load vector from chain
-  deserialize() {
-    super.deserialize()
-    this.vector = new Vector<bigint>('unique-id-vector1');
-    this.map = new UnorderedMap<String, BigInt>('unique-id-map1');
-    this.set = new LookupSet<BigInt>('unique-id-set1');
-  }
+  default(){ return new CollectionsContract({demo_string: "Hello!"})}
 
   @call
   vector_ops({value}) {
