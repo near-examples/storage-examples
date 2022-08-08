@@ -19,8 +19,6 @@ jobs:
         run: cd cross-contract-hello-rs && yarn && yarn test
       - name: test:xcc-hello:as
         run: cd cross-contract-hello-as && yarn && yarn test
-      - name: test:xcc-hello:js
-        run: cd cross-contract-hello-js && yarn && yarn test
       - name: test:donation:rs
         run: cd donation-rs && yarn && yarn test
       - name: test:donation:as
@@ -29,3 +27,5 @@ jobs:
         run: cd storage-rs && yarn && yarn test
       - name: test:storage:as
         run: cd storage-as && yarn && yarn test
+      - name: test:storage:js
+        run: cd storage-js && yarn && yarn test
