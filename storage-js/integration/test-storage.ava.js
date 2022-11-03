@@ -26,18 +26,18 @@ test.afterEach(async (t) => {
 
 test("vector_ops works", async (t) => {
   const { contract } = t.context.accounts;
-  await contract.call(contract, "vector_ops", {value:"1"}, { gas: 200000000000000 });
+  await contract.call(contract, "vector_ops", { value: 1 }, { gas: 200000000000000 });
   t.pass()
 });
 
 test("map_ops works", async (t) => {
   const { contract } = t.context.accounts;
-  await contract.call(contract, "map_ops", {key: "key", value:"1"}, { gas: 200000000000000 });
+  await contract.call(contract, "map_ops", { key: "key", value: 1 }, { gas: 200000000000000 });
   t.pass()
 });
 
 test("set_ops works", async (t) => {
   const { contract } = t.context.accounts;
-  await contract.call(contract, "set_ops", {value:"1"}, { gas: 200000000000000 });
+  await contract.call(contract, "set_ops", { value: 1 }, { gas: 200000000000000 });
   t.pass()
 });
