@@ -15,9 +15,7 @@ jobs:
         with:
           toolchain: stable
           target: wasm32-unknown-unknown
-      - name: test:storage:rs
-        run: cd storage-rs && yarn && yarn test
-      - name: test:storage:as
-        run: cd storage-as && yarn && yarn test
-      - name: test:storage:js
-        run: cd storage-js && yarn && yarn test
+      - name: test:collections-rs
+        run: cd collections-rs && cargo test
+      - name: test:collections-js
+        run: cd collections-js && yarn && yarn test
