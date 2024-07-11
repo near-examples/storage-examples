@@ -1,5 +1,7 @@
-use crate::StorageExample;
+use crate::{StorageExample, StorageExampleExt};
+use near_sdk::near;
 
+#[near]
 impl StorageExample {
     pub fn insert_set(&mut self, value: i32) {
         self.lookup_set.insert(value);
