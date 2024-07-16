@@ -1,11 +1,11 @@
+pub mod lazy;
 pub mod map;
 pub mod nested;
-pub mod vector;
 pub mod set;
-pub mod lazy;
 pub mod tree;
+pub mod vector;
 
-use near_sdk::collections::{LazyOption, LookupMap, LookupSet, TreeMap, Vector};
+use near_sdk::collections::{LazyOption, LookupMap, LookupSet, TreeMap, Vector, UnorderedMap, UnorderedSet};
 use near_sdk::near;
 use near_sdk::BorshStorageKey;
 

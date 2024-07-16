@@ -19,15 +19,14 @@ impl StorageExample {
         self.vector.len()
     }
 
-    pub fn iter(&self, from: i32, amount: i32) -> Vec<&i32> {
+    pub fn iter(&self, from_index: i32, limit: i32) -> Vec<&i32> {
         self.vector
             .iter()
-            .skip(from as usize)
-            .take(amount as usize)
+            .skip(from_index as usize)
+            .take(limit as usize)
             .collect()
     }
 }
-
 
 #[cfg(test)]
 mod tests {

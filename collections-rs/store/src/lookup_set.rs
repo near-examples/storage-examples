@@ -22,7 +22,7 @@ mod tests {
     use near_sdk::require;
 
     #[test]
-    fn test_set() {
+    fn test_lookup_set() {
         let mut contract = StorageExample::default();
         let value: i32 = 1;
 

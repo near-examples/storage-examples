@@ -22,11 +22,11 @@ impl StorageExample {
 
 #[cfg(test)]
 mod tests {
-    use near_sdk::require;
     use crate::StorageExample;
+    use near_sdk::require;
 
     #[test]
-    fn test_map() {
+    fn test_lookup_map() {
         let mut contract = StorageExample::default();
 
         let key: String = "key".to_string();
