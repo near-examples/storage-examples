@@ -20,11 +20,11 @@ impl StorageExample {
     }
 
     pub fn iter_iterable_map(&self, from_index: i32, limit: i32) -> Vec<(&String, &i32)> {
-      self.iterable_map
-          .iter()
-          .skip(from_index as usize)
-          .take(limit as usize)
-          .collect()
+        self.iterable_map
+            .iter()
+            .skip(from_index as usize)
+            .take(limit as usize)
+            .collect()
     }
 }
 

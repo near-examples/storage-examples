@@ -1,8 +1,8 @@
 pub mod iterable_map;
-pub mod lookup_map;
-pub mod nested;
 pub mod iterable_set;
+pub mod lookup_map;
 pub mod lookup_set;
+pub mod nested;
 pub mod vector;
 
 use near_sdk::near;
