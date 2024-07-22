@@ -49,7 +49,7 @@ mod tests {
         require!(contract.contains_key_nested(key.clone()), "Expected value");
 
         let val = contract.get_nested(key.clone());
-        require!(val[0] == 0, "Wrong value obtained");
+        require!(val[0] == 1, "Wrong value obtained");
 
         contract.remove_nested(key.clone());
 

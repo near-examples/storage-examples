@@ -1,19 +1,19 @@
 use crate::StorageExample;
 
 impl StorageExample {
-    pub fn insert_map(&mut self, key: String, value: i32) {
+    pub fn insert_lookup_map(&mut self, key: String, value: i32) {
         self.lookup_map.insert(&key, &value);
     }
 
-    pub fn remove_map(&mut self, key: String) {
+    pub fn remove_lookup_map(&mut self, key: String) {
         self.lookup_map.remove(&key);
     }
 
-    pub fn get_map(&self, key: String) -> i32 {
+    pub fn get_lookup_map(&self, key: String) -> i32 {
         self.lookup_map.get(&key).expect("Expected value")
     }
 
-    pub fn contains_key_map(&self, key: String) -> bool {
+    pub fn contains_key_lookup_map(&self, key: String) -> bool {
         self.lookup_map.contains_key(&key)
     }
 }
@@ -25,7 +25,7 @@ mod tests {
     use crate::StorageExample;
 
     #[test]
-    fn test_map() {
+    fn test_lookup_map() {
         let mut contract = StorageExample::default();
 
         let key: String = "key".to_string();

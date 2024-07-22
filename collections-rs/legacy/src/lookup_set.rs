@@ -1,15 +1,15 @@
 use crate::StorageExample;
 
 impl StorageExample {
-    pub fn insert_set(&mut self, value: i32) {
+    pub fn insert_lookup_set(&mut self, value: i32) {
         self.lookup_set.insert(&value);
     }
 
-    pub fn remove_set(&mut self, value: i32) {
+    pub fn remove_lookup_set(&mut self, value: i32) {
         self.lookup_set.remove(&value);
     }
 
-    pub fn contains_set(&self, value: i32) -> bool {
+    pub fn contains_lookup_set(&self, value: i32) -> bool {
         self.lookup_set.contains(&value)
     }
 }
@@ -20,7 +20,7 @@ mod tests {
     use near_sdk::require;
 
     #[test]
-    fn test_set() {
+    fn test_lookup_set() {
         let mut contract = StorageExample::default();
         let value: i32 = 1;
 
