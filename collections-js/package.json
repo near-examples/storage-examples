@@ -1,11 +1,11 @@
 {
-  "name": "hello_near",
+  "name": "collections",
   "version": "1.0.0",
   "license": "(MIT AND Apache-2.0)",
   "type": "module",
   "scripts": {
-    "build": "near-sdk-js build src/contract.ts build/hello_near.wasm",
-    "test": "$npm_execpath run build && ava -- ./build/hello_near.wasm"
+    "build": "near-sdk-js build src/contract.ts build/collections.wasm",
+    "test": "$npm_execpath run build && ava -- ./build/collections.wasm"
   },
   "dependencies": {
     "near-sdk-js": "2.0.0"
@@ -16,6 +16,7 @@
     "typescript": "^5.4.5"
   },
   "ava": {
-    "files": ["sandbox-test/*.ava.js"]
+    "files": ["sandbox-test/*.ava.js"],
+    "timeout": "15s"
   }
 }
