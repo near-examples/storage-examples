@@ -1,5 +1,5 @@
 // Find all our documentation at https://docs.near.org
-import { NearBindgen, call, view, near, LookupSet, UnorderedSet, UnorderedMap, Vector, initialize, LookupMap } from "near-sdk-js";
+import { NearBindgen, call, view, near, LookupSet, UnorderedSet, UnorderedMap, Vector, LookupMap } from "near-sdk-js";
 
 @NearBindgen({})
 class Storage {
@@ -135,7 +135,6 @@ class Storage {
   iter_unordered_map({ from_index, limit }: { from_index: number, limit:number }) {
     return this.unordered_map.toArray().slice(from_index, limit);
   }
-
 
   // Nested
   @call({})
