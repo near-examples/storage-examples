@@ -12,12 +12,24 @@ class Storage {
     outerMap: { class: UnorderedMap, value: UnorderedMap }
   };
   
+  greeting: string = 'Hello';
   vector: Vector<number> = new Vector<number>('unique-id-vector1');
   lookup_set: LookupSet<number> = new LookupSet<number>('unique-id-set1');
   unordered_set: UnorderedSet<number> = new UnorderedSet<number>('unique-id-set2');
   lookup_map: LookupMap<number> = new LookupMap<number>('unique-id-map1');
   unordered_map: UnorderedMap<number> = new UnorderedMap<number>('unique-id-map2');
-  outerMap: UnorderedMap<UnorderedMap<string>> = new UnorderedMap<UnorderedMap<string>>('unique-id-nested1');
+  outerMap: UnorderedMap<UnorderedMap<number>> = new UnorderedMap<UnorderedMap<number>>('unique-id-nested1');
+
+  @view({}) // This method is read-only and can be called for free
+  get_greeting(): string {
+    return this.greeting;
+  }
+
+  @call({}) // This method changes the state, for which it cost gas
+  set_greeting({ greeting }: { greeting: string }): void {
+    near.log(`Saving greeting ${greeting}`);
+    this.greeting = greeting;
+  }
 
   // Vector
   @call({})
@@ -122,5 +134,51 @@ class Storage {
   @view({})
   iter_unordered_map({ from_index, limit }: { from_index: number, limit:number }) {
     return this.unordered_map.toArray().slice(from_index, limit);
+  }
+
+
+  // Nested
+  @call({})
+  insert_nested({ key, value }: { key: string, value: number }) {
+    const accountId = near.signerAccountId();
+
+    let innerMap = this.outerMap.get(accountId);
+
+    if (innerMap === null) {
+      innerMap = new UnorderedMap<number>(accountId);
+    }
+
+    innerMap.set(key, value);
+    this.outerMap.set(accountId, innerMap);
+  }
+
+  @call({})
+  remove_nested({ key }: { key: string }) {
+    const accountId = near.signerAccountId();
+    const innerMap = this.outerMap.get(accountId);
+
+    innerMap.remove(key);
+    this.outerMap.set(accountId, innerMap);
+  }
+
+  @view({})
+  get_nested({ accountId, key }: { accountId: string, key: string }): number {
+    const innerMap = this.outerMap.get(accountId);
+
+    if (innerMap === null) {
+      return null;
+    }
+    return innerMap.get(key);
+  }
+
+  @view({})
+  iter_nested({ accountId, from_index, limit }: { accountId: string, from_index: number, limit:number }) {
+    const innerMap = this.outerMap.get(accountId);
+
+    if (innerMap === null) {
+      return null;
+    }
+
+    return innerMap.toArray().slice(from_index, limit);
   }
 }
