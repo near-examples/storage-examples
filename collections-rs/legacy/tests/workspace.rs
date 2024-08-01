@@ -15,11 +15,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let _ = test_account.call(contract.id(), "init").transact().await?;
 
     // begin tests
-    // test_vector(&test_account, &contract).await?;
-    // test_lookup_set(&test_account, &contract).await?;
-    // test_unordered_set(&test_account, &contract).await?;
-    // test_lookup_map(&test_account, &contract).await?;
-    // test_unordered_map(&test_account, &contract).await?;
+    test_vector(&test_account, &contract).await?;
+    test_lookup_set(&test_account, &contract).await?;
+    test_unordered_set(&test_account, &contract).await?;
+    test_lookup_map(&test_account, &contract).await?;
+    test_unordered_map(&test_account, &contract).await?;
     test_nested(&test_account, &contract).await?;
 
     Ok(())
