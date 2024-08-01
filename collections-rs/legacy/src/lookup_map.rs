@@ -1,5 +1,9 @@
-use crate::StorageExample;
+use near_sdk::near;
 
+use crate::StorageExample;
+use crate::StorageExampleExt;
+
+#[near]
 impl StorageExample {
     pub fn insert_lookup_map(&mut self, key: String, value: i32) {
         self.lookup_map.insert(&key, &value);
@@ -26,7 +30,7 @@ mod tests {
 
     #[test]
     fn test_lookup_map() {
-        let mut contract = StorageExample::default();
+        let mut contract = StorageExample::init();
 
         let key: String = "key".to_string();
         let value: i32 = 1;

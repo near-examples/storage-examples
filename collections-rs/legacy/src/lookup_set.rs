@@ -1,5 +1,9 @@
-use crate::StorageExample;
+use near_sdk::near;
 
+use crate::StorageExample;
+use crate::StorageExampleExt;
+
+#[near]
 impl StorageExample {
     pub fn insert_lookup_set(&mut self, value: i32) {
         self.lookup_set.insert(&value);
@@ -21,7 +25,7 @@ mod tests {
 
     #[test]
     fn test_lookup_set() {
-        let mut contract = StorageExample::default();
+        let mut contract = StorageExample::init();
         let value: i32 = 1;
 
         contract.lookup_set.insert(&value);

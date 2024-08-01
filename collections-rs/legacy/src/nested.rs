@@ -1,6 +1,7 @@
-use crate::{Prefix, StorageExample};
-use near_sdk::collections::Vector;
+use crate::{Prefix, StorageExample, StorageExampleExt};
+use near_sdk::{near, collections::Vector};
 
+#[near]
 impl StorageExample {
     pub fn insert_nested(&mut self, key: String, value: i32) {
         if self.nested.contains_key(&key) {
@@ -39,7 +40,7 @@ mod tests {
 
     #[test]
     fn test_nested() {
-        let mut contract = StorageExample::default();
+        let mut contract = StorageExample::init();
 
         let key: String = "key".to_string();
         let value = 1;

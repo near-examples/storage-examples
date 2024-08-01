@@ -16,6 +16,6 @@ jobs:
           toolchain: stable
           target: wasm32-unknown-unknown
       - name: test:collections-rs
-        run: cd collections-rs && cargo test
+        run: cd collections-rs && mkdir -p ./target/near/store/ && mkdir -p ./target/near/legacy/ && cargo test
       - name: test:collections-js
         run: cd collections-js && yarn && yarn test

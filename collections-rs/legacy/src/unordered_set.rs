@@ -31,7 +31,7 @@ mod tests {
 
     #[test]
     fn test_unordered_set() {
-        let mut contract = StorageExample::default();
+        let mut contract = StorageExample::init();
         let value: i32 = 1;
 
         contract.unordered_set.insert(&value);

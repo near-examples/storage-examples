@@ -1,5 +1,9 @@
-use crate::StorageExample;
+use near_sdk::near;
 
+use crate::StorageExample;
+use crate::StorageExampleExt;
+
+#[near]
 impl StorageExample {
     pub fn get_lazy(&self) -> u8 {
         self.lazy_option.get().expect("No value found")
@@ -21,7 +25,7 @@ mod tests {
 
     #[test]
     fn test_lazy() {
-        let mut contract = StorageExample::default();
+        let mut contract = StorageExample::init();
 
         let lazy_option_value = contract.lazy_option.get().unwrap();
         // WHY?
