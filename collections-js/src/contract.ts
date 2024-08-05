@@ -4,14 +4,14 @@ import { NearBindgen, call, view, near, LookupSet, UnorderedSet, UnorderedMap, V
 @NearBindgen({})
 class Storage {
   static schema = {
-    vector: Vector,
-    lookup_set: LookupSet,
-    unordered_set: UnorderedSet,
-    lookup_map: LookupMap,
-    unordered_map: UnorderedMap,
-    nested: { class: UnorderedMap, value: UnorderedMap }
+    vector: { class: Vector, value: "number" },
+    lookup_set: { class: LookupSet, value: "number" },
+    unordered_set: { class: UnorderedSet, value: "number" },
+    lookup_map: { class: LookupMap, value: "number" },
+    unordered_map: { class: UnorderedMap, value: "number" },
+    nested: { class: UnorderedMap, value: { class: UnorderedMap, value: "number" } }
   };
-  
+
   greeting: string = 'Hello';
   vector: Vector<number> = new Vector<number>('uid-1');
   lookup_set: LookupSet<number> = new LookupSet<number>('uid-2');
@@ -33,7 +33,7 @@ class Storage {
 
   // Vector
   @call({})
-  push_vector({ value }: { value:number }) {
+  push_vector({ value }: { value: number }) {
     this.vector.push(value);
   }
 
@@ -43,7 +43,7 @@ class Storage {
   }
 
   @call({})
-  replace_vector({ index, value }: { index: number, value:number }) {
+  replace_vector({ index, value }: { index: number, value: number }) {
     this.vector.replace(index, value);
   }
 
@@ -90,7 +90,7 @@ class Storage {
   }
 
   @view({})
-  iter_unordered_set({ from_index, limit }: { from_index: number, limit:number }) {
+  iter_unordered_set({ from_index, limit }: { from_index: number, limit: number }) {
     return this.unordered_set.toArray().slice(from_index, limit);
   }
 
@@ -132,7 +132,7 @@ class Storage {
   }
 
   @view({})
-  iter_unordered_map({ from_index, limit }: { from_index: number, limit:number }) {
+  iter_unordered_map({ from_index, limit }: { from_index: number, limit: number }) {
     return this.unordered_map.toArray().slice(from_index, limit);
   }
 
@@ -171,7 +171,7 @@ class Storage {
   }
 
   @view({})
-  iter_nested({ accountId, from_index, limit }: { accountId: string, from_index: number, limit:number }) {
+  iter_nested({ accountId, from_index, limit }: { accountId: string, from_index: number, limit: number }) {
     const innerMap = this.nested.get(accountId);
 
     if (innerMap === null) {
