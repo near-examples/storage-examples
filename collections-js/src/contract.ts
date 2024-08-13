@@ -13,6 +13,7 @@ class Storage {
   };
 
   greeting: string = 'Hello';
+  big_int: BigInt = BigInt(0);
   vector: Vector<number> = new Vector<number>('uid-1');
   lookup_set: LookupSet<number> = new LookupSet<number>('uid-2');
   unordered_set: UnorderedSet<number> = new UnorderedSet<number>('uid-3');
@@ -29,6 +30,17 @@ class Storage {
   set_greeting({ greeting }: { greeting: string }): void {
     near.log(`Saving greeting ${greeting}`);
     this.greeting = greeting;
+  }
+
+  @view({}) // This method is read-only and can be called for free
+  get_big_int(): string {
+    return this.big_int as unknown as string; // Because of serializing process it actually returns BigInt as string for view methods
+  }
+
+  @call({}) // This method changes the state, for which it cost gas
+  set_big_int({ value }: { value: string }): void {
+    near.log(`Saving big int value: ${value}`);
+    this.big_int = BigInt(value);
   }
 
   // Vector

@@ -32,6 +32,19 @@ test.afterEach.always(async (t) => {
   });
 });
 
+test('testing bigint methods', async (t) => {
+  const { root, contract } = t.context.accounts;
+  const newValue = '1';
+
+  let currentValue = await contract.view('get_big_int', {});
+  t.assert(currentValue === '0', "Incorrect big int");
+
+  await root.call(contract, 'set_big_int', { value: newValue });
+
+  currentValue = await contract.view('get_big_int', {});
+  t.assert(currentValue === currentValue, "Incorrect big int");
+});
+
 test('testing string methods', async (t) => {
   const { root, contract } = t.context.accounts;
   const newGreeting = 'Hi';
