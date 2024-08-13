@@ -34,15 +34,14 @@ test.afterEach.always(async (t) => {
 
 test('testing bigint methods', async (t) => {
   const { root, contract } = t.context.accounts;
-  const newValue = '1';
 
-  let currentValue = await contract.view('get_big_int', {});
-  t.assert(currentValue === '0', "Incorrect big int");
+  let currentValue = await contract.view('get_big_plus_one', {});
+  t.assert(currentValue === '1', "Incorrect big int");
 
-  await root.call(contract, 'set_big_int', { value: newValue });
+  await root.call(contract, 'set_big', { value: '3' });
 
-  currentValue = await contract.view('get_big_int', {});
-  t.assert(currentValue === currentValue, "Incorrect big int");
+  currentValue = await contract.view('get_big_plus_one', {});
+  t.assert(currentValue === '4', "Incorrect big int");
 });
 
 test('testing string methods', async (t) => {

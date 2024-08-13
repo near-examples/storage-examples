@@ -4,6 +4,8 @@ import { NearBindgen, call, view, near, LookupSet, UnorderedSet, UnorderedMap, V
 @NearBindgen({})
 class Storage {
   static schema = {
+    greeting: "string",
+    big: BigInt,
     vector: { class: Vector, value: "number" },
     lookup_set: { class: LookupSet, value: "number" },
     unordered_set: { class: UnorderedSet, value: "number" },
@@ -13,7 +15,7 @@ class Storage {
   };
 
   greeting: string = 'Hello';
-  big_int: BigInt = BigInt(0);
+  big: bigint = BigInt(0);
   vector: Vector<number> = new Vector<number>('uid-1');
   lookup_set: LookupSet<number> = new LookupSet<number>('uid-2');
   unordered_set: UnorderedSet<number> = new UnorderedSet<number>('uid-3');
@@ -33,14 +35,14 @@ class Storage {
   }
 
   @view({}) // This method is read-only and can be called for free
-  get_big_int(): bigint {
-    return this.big_int
+  get_big_plus_one(): bigint {
+    return this.big + BigInt(1);
   }
 
-  @call({}) // This method changes the state, for which it cost gas
-  set_big_int({ value }: { value: string }): void {
+  @call({}) // For bigints we need to take string as input
+  set_big({ value }: { value: string }): void {
     near.log(`Saving big int value: ${value}`);
-    this.big_int = BigInt(value);
+    this.big = BigInt(value);
   }
 
   // Vector
