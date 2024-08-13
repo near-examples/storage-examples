@@ -34,7 +34,7 @@ class Storage {
 
   @view({}) // This method is read-only and can be called for free
   get_big_int(): bigint {
-    return this.big_int as unknown as string; // Because of serializing process it actually returns BigInt as string for view methods
+    return this.big_int
   }
 
   @call({}) // This method changes the state, for which it cost gas
