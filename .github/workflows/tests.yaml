@@ -18,5 +18,8 @@ jobs:
         run: cargo install cargo-near --version 0.21.1 --locked --no-default-features
       - name: test:collections-rs
         run: cd collections-rs && mkdir -p ./target/near/store/ && mkdir -p ./target/near/legacy/ && cargo test
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
       - name: test:collections-js
-        run: cd collections-js && yarn && yarn test
+        run: cd collections-js && yarn install --frozen-lockfile && yarn test
