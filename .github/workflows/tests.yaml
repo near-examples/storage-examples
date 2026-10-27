@@ -15,7 +15,7 @@ jobs:
         with:
           targets: wasm32-unknown-unknown
       - name: Install contract build tooling
-        run: cargo install cargo-near --version 0.21.1 --locked
+        run: cargo install cargo-near --version 0.21.1 --locked --no-default-features
       - name: test:collections-rs
         run: cd collections-rs && mkdir -p ./target/near/store/ && mkdir -p ./target/near/legacy/ && cargo test
       - name: test:collections-js
