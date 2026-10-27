@@ -32,3 +32,6 @@ This repository contains examples of using collections in smart contract develop
 # Learn More
 1. Learn more about the contract through its [README](./contract-ts/README.md).
 2. Check [**our documentation**](https://docs.near.org/build/smart-contracts/anatomy/collections) about collections in Rust and JavaScript.
+## JavaScript contract checks
+
+Use Node.js 22.22.2+ and Yarn Classic. Run `yarn install --frozen-lockfile` and `yarn test` from `collections-js`. The published JavaScript SDK currently supplies an Intel macOS WASI compiler; the supported Linux CI runs the full build and sandbox tests independently of the Rust checks.

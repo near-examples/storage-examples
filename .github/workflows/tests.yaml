@@ -18,8 +18,20 @@ jobs:
         run: cargo install cargo-near --version 0.21.1 --locked --no-default-features
       - name: test:collections-rs
         run: cd collections-rs && mkdir -p ./target/near/store/ && mkdir -p ./target/near/legacy/ && cargo test
+  javascript:
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.platform }}
+    defaults:
+      run:
+        working-directory: collections-js
+    steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
-      - name: test:collections-js
-        run: cd collections-js && yarn install --frozen-lockfile && yarn test
+          cache: yarn
+          cache-dependency-path: collections-js/yarn.lock
+      - run: yarn install --frozen-lockfile
+      - run: yarn test
