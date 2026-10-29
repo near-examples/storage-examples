@@ -1,23 +1,36 @@
-# Storage Examples 🧑‍⚖️ 
-[![](https://img.shields.io/badge/⋈%20Examples-Basics-green)](https://docs.near.org/tutorials/welcome)
-[![](https://img.shields.io/badge/Contract-JS-yellow)](contract-ts)
-[![](https://img.shields.io/badge/Contract-Rust-red)](contract-rs)
-![example workflow](https://github.com/near-examples/auction-examples/actions/workflows/tests-ts.yml/badge.svg)
-![example workflow](https://github.com/near-examples/auction-examples/actions/workflows/tests-rs.yml/badge.svg)
+# Rust Storage Examples
 
-This repository contains examples of using collections in smart contract development in both JavaScript and Rust. 
+Runnable examples of persistent collections in `near_sdk::store`:
 
-- [JavaScript Examples](collections-js)
-- [Rust Examples](collections-rs)
+- `Vector`
+- `LookupMap` and `IterableMap`
+- `LookupSet` and `IterableSet`
+- Nested collections with distinct storage prefixes and explicit cleanup
 
-<br />
+The contract is in [`collections-rs/store`](collections-rs/store). Collection modules include unit tests, and the integration suite deploys the contract to a local Sandbox and checks each collection across calls. See the [collections guide](https://docs.near.org/smart-contracts/anatomy/collections) for explanations of storage prefixes and collection selection.
 
-# What These Examples Show
+## Requirements
 
-1. How to store and retrieve information from different collections in smart contracts.
+Install [rustup](https://rustup.rs/). The repository pins Rust 1.97.1 and uses NEAR SDK 5.29.1. Install the contract build tool:
 
-<br />
+```bash
+cargo install cargo-near --version 0.21.1 --locked --no-default-features
+```
 
-# Learn More
-1. Learn more about the contract through its [README](./contract-ts/README.md).
-2. Check [**our documentation**](https://docs.near.org/build/smart-contracts/anatomy/collections) about collections in Rust and JavaScript.
+## Build
+
+```bash
+cd collections-rs/store
+cargo near build non-reproducible-wasm --locked
+```
+
+The build command prints the path to the generated Wasm artifact.
+
+## Test
+
+```bash
+cd collections-rs
+cargo test --locked
+```
+
+Tests build the contract from source and use local Sandbox accounts. They do not require a funded public-network account or a frontend.

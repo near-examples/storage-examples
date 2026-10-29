@@ -3,19 +3,22 @@ on:
   repository_dispatch:
     types: [tests-report]
   push:
+  pull_request:
 jobs:
-  tests:
+  rust:
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.platform }}
+    defaults:
+      run:
+        working-directory: collections-rs
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.97.1
         with:
-          toolchain: stable
-          target: wasm32-unknown-unknown
-      - name: test:collections-rs
-        run: cd collections-rs && mkdir -p ./target/near/store/ && mkdir -p ./target/near/legacy/ && cargo test
-      - name: test:collections-js
-        run: cd collections-js && yarn && yarn test
+          targets: wasm32-unknown-unknown
+      - name: Install contract build tooling
+        run: cargo install cargo-near --version 0.21.1 --locked --no-default-features
+      - name: Test Rust collections
+        run: cargo test --locked
