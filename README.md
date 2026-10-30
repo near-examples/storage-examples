@@ -7,7 +7,7 @@ Runnable examples of persistent collections in `near_sdk::store`:
 - `LookupSet` and `IterableSet`
 - Nested collections with distinct storage prefixes and explicit cleanup
 
-The contract is in [`collections-rs/store`](collections-rs/store). Collection modules include unit tests, and the integration suite deploys the contract to a local Sandbox and checks each collection across calls. See the [collections guide](https://docs.near.org/smart-contracts/anatomy/collections) for explanations of storage prefixes and collection selection.
+The contract is in [`collections-rs/store`](collections-rs/store). Collection modules include unit tests, and the integration suite uses `near-sandbox` and `near-api` to deploy the contract to a local Sandbox and checks each collection across calls. See the [collections guide](https://docs.near.org/smart-contracts/anatomy/collections) for explanations of storage prefixes and collection selection.
 
 ## Requirements
 
